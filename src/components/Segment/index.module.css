@@ -1,0 +1,31 @@
+.segment {
+  background-color: rgba(0, 0, 0, 0.075);
+  background-image: linear-gradient(
+    to bottom right,
+    var(--text-before-color),
+    var(--dark-main-color)
+  );
+  border-radius: 0.8rem;
+  padding: 1rem 1.2rem;
+
+  display: flex;
+  justify-content: center;
+  gap: 2.8rem;
+}
+
+.segment div {
+  cursor: pointer;
+  transition: all 0.3s;
+
+  padding: 1rem 0;
+  font-size: 2rem;
+  color: var(--secondary-color);
+}
+
+.segment div.select {
+  padding-left: 2rem;
+  padding-right: 2rem;
+  background-color: var(--main-color);
+  color: white;
+  border-radius: 100rem;
+}

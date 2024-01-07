@@ -1,0 +1,22 @@
+.settingCard {
+  background-color: #fff;
+
+  border-radius: 10px;
+  padding: 0 2rem 2rem 2rem;
+}
+
+.settingHeadingTitle {
+  border-bottom: 1px solid #eee;
+
+  padding: 1.2rem 0;
+
+  font-weight: 500;
+  color: var(--main-color);
+
+  margin-bottom: 2rem;
+  font-size: 3.2rem;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

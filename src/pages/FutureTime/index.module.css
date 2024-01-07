@@ -1,0 +1,126 @@
+.FuncTitle {
+  font-size: 2.6rem;
+  line-height: 2.6rem;
+  font-weight: 500;
+  color: var(--main-color);
+}
+
+.SortContainer {
+  cursor: pointer;
+  font-size: 1.8rem;
+
+  color: rgb(82, 82, 82);
+
+  padding: 0.5rem 0.8rem;
+  border-radius: 5px;
+}
+
+.SortContainer:hover {
+  background-color: var(--list-bg-main-color);
+}
+
+.SortContainer svg {
+  fill: rgb(82, 82, 82);
+}
+
+.MainShowContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+
+  margin-top: 1.6rem;
+}
+
+.TimeCard {
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2rem;
+
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+
+  transition: all 0.3s;
+}
+
+.TimeCard:hover {
+  scale: 1.05;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
+}
+
+.TimeCard h4 {
+  font-size: 2.2rem;
+  line-height: 1.5;
+  font-weight: 500;
+  /* color: var(--main-color); */
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+
+  padding: 0.6rem 0;
+}
+
+.TimeCard h6 {
+  text-align: center;
+  font-size: 2.8rem;
+  font-weight: 400;
+  color: var(--dark-main-color);
+
+  padding: 1rem;
+}
+
+.TimeCard h6 span {
+  font-size: 3.4rem;
+  text-shadow: 1px 3px 0 rgba(0, 0, 0, 0.2);
+}
+
+.TimeCard p {
+  margin-top: auto;
+  font-size: 1.2rem;
+
+  padding: 1rem;
+}
+
+.ModalContainer {
+  width: 25rem;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.MainBarFuncs {
+  flex: 1;
+  max-height: 44rem;
+  overflow: auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin-top: 3rem;
+}
+
+.MainBarFuncs section {
+  cursor: pointer;
+  padding: 1rem;
+  font-size: 1.6rem;
+
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  background-color: var(--list-bg-main-color);
+  border-radius: 5px;
+  color: var(--main-color);
+}
+
+.CardTitle {
+  background-color: var(--main-color);
+  color: var(--secondary-color);
+
+  text-align: center;
+}

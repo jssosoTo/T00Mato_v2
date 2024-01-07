@@ -1,0 +1,51 @@
+.CountDownCard {
+  user-select: none;
+  border-radius: 15px;
+
+  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.15);
+
+  grid-column: 2 / 3;
+  padding: 1.2rem;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.CountDownTitle {
+  font-size: 3rem;
+  text-align: center;
+  font-weight: 500;
+  color: var(--dark-main-color);
+
+  margin-bottom: 0.8rem;
+}
+
+.CountDownTime {
+  font-size: 4rem;
+  display: flex;
+
+  justify-content: center;
+  gap: 1.2rem;
+  align-items: center;
+
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.CountDownTime span {
+  background-color: var(--list-bg-main-color);
+  color: var(--main-color);
+  padding: 1.2rem;
+  line-height: 4rem;
+
+  border-radius: 5px;
+}
+
+.CountDownDay {
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: var(--btn-main-color);
+
+  margin-bottom: 0.5rem;
+}

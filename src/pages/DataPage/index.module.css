@@ -1,0 +1,30 @@
+.Item > h4 {
+  font-weight: normal;
+  text-align: center;
+  font-size: 2rem;
+}
+
+.CountShow {
+  font-weight: 500;
+  font-size: 3.6em;
+  text-align: center;
+}
+
+.minuteShow {
+  font-size: 1.8rem;
+  font-weight: normal;
+}
+
+.experiment {
+  background: conic-gradient(red, yellow, green, blue, aqua, purple);
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: 50%;
+}
+
+.Segment {
+  margin: 0 auto;
+  padding-left: 4rem;
+  padding-right: 4rem;
+  gap: 6rem;
+}

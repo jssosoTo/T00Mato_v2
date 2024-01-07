@@ -1,0 +1,95 @@
+.Book {
+  min-height: 100%;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
+
+  display: flex;
+  flex-direction: column;
+}
+
+.currentTime {
+  position: relative;
+  text-align: center;
+  font-size: 1.6rem;
+  color: gray;
+  padding: 1rem 0;
+}
+
+.DiaryTitle {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  font-size: 2rem;
+  padding: 0 1rem;
+
+  margin-bottom: 1rem;
+}
+
+.DiaryTitle h4 {
+  font-weight: 500;
+}
+
+.DiaryTitle input {
+  outline: none;
+  border: none;
+  background-color: transparent;
+  border-bottom: 1px solid gray;
+
+  flex: 1;
+  font-size: 2rem;
+  padding: 0.4rem 0;
+}
+
+.TextAreaContainer {
+  flex: 1;
+  padding: 0 2rem;
+}
+
+.TextAreaContainer textarea {
+  display: block;
+  width: 100%;
+  min-height: 45rem;
+  outline: none;
+  border: none;
+  resize: none;
+
+  font-size: 1.8rem;
+}
+
+.FuncContainer {
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
+
+  display: flex;
+  gap: 0.5rem;
+}
+
+.SvgBtn {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 0.6rem;
+  font-size: 1.8rem;
+
+  padding: 0.4rem 0.8rem;
+
+  border-radius: 0.4rem;
+
+  color: var(--main-color);
+}
+
+.SvgText {
+  font-size: 1.6rem;
+}
+
+.SvgBtn:hover {
+  background-color: var(--list-bg-main-color);
+}
+
+.SvgBtn svg {
+  fill: var(--main-color);
+}

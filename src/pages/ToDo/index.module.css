@@ -1,0 +1,123 @@
+.HeaderTitle {
+  padding-top: 2rem;
+}
+
+.HeaderTitle h2 {
+  font-size: 2.6rem;
+  font-weight: 500;
+  color: var(--main-color);
+}
+
+.Header {
+  margin-bottom: 2rem;
+}
+
+.Header > p {
+  font-size: 1.2rem;
+  color: gray;
+}
+
+.SortPosition {
+  position: relative;
+
+  display: flex;
+  gap: 2rem;
+}
+
+.SortContainer {
+  cursor: pointer;
+  font-size: 1.6rem;
+
+  color: var(--main-color);
+
+  padding: 0.4rem 0.6rem;
+  border-radius: 5px;
+}
+
+.SortContainer:hover {
+  background-color: var(--list-bg-main-color);
+}
+
+.SortContainer svg {
+  fill: var(--main-color);
+}
+
+.SortModal {
+  position: absolute;
+  top: 3rem;
+  right: 0;
+  width: 22rem;
+  color: black;
+
+  border-radius: 10px;
+  background-color: #fff;
+  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.2);
+}
+
+.SortModal h4 {
+  font-size: 1.8rem;
+  font-weight: 500;
+  padding: 0.8rem 0;
+  text-align: center;
+  border-bottom: 1px solid lightgray;
+}
+
+.SortModal ul {
+  margin-top: 0.8rem;
+  margin-bottom: 1rem;
+  font-size: 1.6rem;
+}
+
+.SortModal ul li {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1rem 0 1rem 1.5rem;
+}
+
+.SortModal ul li:hover {
+  background-color: rgba(0, 0, 0, 0.075);
+}
+
+.SelectedWay {
+  background-color: var(--list-bg-main-color) !important;
+}
+
+.MainContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.ModalContainer {
+  width: 25rem;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.MainBarFuncs {
+  flex: 1;
+  max-height: 44rem;
+  overflow: auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin-top: 3rem;
+}
+
+.MainBarFuncs section {
+  cursor: pointer;
+  padding: 1rem;
+  font-size: 1.6rem;
+
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  background-color: var(--list-bg-main-color);
+  border-radius: 5px;
+  color: var(--main-color);
+}

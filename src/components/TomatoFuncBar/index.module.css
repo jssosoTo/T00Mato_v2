@@ -1,0 +1,47 @@
+.Aside {
+  overflow: hidden;
+  width: 28rem;
+
+  border-right: 1px solid rgb(232, 232, 232);
+  box-shadow: 0 1px 20px 0px rgba(0, 0, 0, 0.09);
+}
+
+.SidebarTitle {
+  font-size: 2rem;
+  text-align: center;
+  font-weight: 500;
+}
+
+.SidebarTitle > div {
+  border-bottom: 1px solid rgb(233, 233, 233);
+  padding: 1.6rem 0;
+}
+
+.TodoList li a {
+  padding-top: 1.2rem;
+  padding-bottom: 1.2rem;
+  padding-left: 1.4rem;
+  padding-right: 1.4rem;
+
+  transition: all 0.3s;
+
+  font-size: 2rem;
+
+  text-decoration: none;
+  color: black;
+}
+
+.TodoList li a:hover {
+  padding-left: 2.4rem;
+  background-color: rgba(0, 0, 0, 0.075);
+}
+
+.TodoList .Active {
+  background-color: var(--list-bg-main-color) !important;
+
+  border-left: 4px solid var(--main-color);
+}
+
+.TodoList .Active {
+  color: var(--main-color);
+}
