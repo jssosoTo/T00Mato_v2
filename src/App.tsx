@@ -1,15 +1,18 @@
 import React, { ReactNode, useContext } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home/Home';
-import TomatoNav from './components/TomatoNav/TomatoNav';
+// import TomatoNav from './components/TomatoNav/TomatoNav';
 import TomatoFuncBar from './components/TomatoFuncBar';
 import { AppContext } from './components/Context/AppAPI/AppAPI';
 import Diary from './pages/Diary';
 import DetailDiary from './pages/Diary/DetailDiary';
 import TimeClock from './pages/TimeClock';
-import FutureTime from './pages/FutureTime';
+// import FutureTime from './pages/FutureTime';
 import DataPage from './pages/DataPage';
 import ToDo from './pages/ToDo';
+// import DemoHeatmap from './components/DemoHeatMap';
+import CountdownTime from './pages/CountdownTime';
+import MyInfo from './pages/MyInfo';
 
 type RoutesProp = {
   path: string;
@@ -37,7 +40,8 @@ const routes: RoutesProp[] = [
   },
   {
     path: '/futureTime',
-    element: <FutureTime />,
+    element: <CountdownTime />,
+    // element: <FutureTime />,
   },
   {
     path: '/data',
@@ -61,6 +65,10 @@ const routes: RoutesProp[] = [
       },
     ],
   },
+  {
+    path: '/myInfo',
+    element: <MyInfo />,
+  },
 ];
 
 function App() {
@@ -73,8 +81,9 @@ function App() {
         path="*"
         element={
           <>
-            <TomatoNav isExtendSideBar={isExtendSideBar} />
-            <main className="main flex">
+            {/* <TomatoNav isExtendSideBar={isExtendSideBar} /> */}
+            {/* <DemoHeatmap /> */}
+            <main className="main flex" style={{ position: 'relative' }}>
               <TomatoFuncBar isShow={isExtendSideBar} />
               <Routes>{formatRoutes(routes)}</Routes>
             </main>

@@ -1,0 +1,170 @@
+.ModalContainer {
+  width: 25rem;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.MainBarFuncs {
+  flex: 1;
+  max-height: 70vh;
+  overflow: auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin-top: 3rem;
+}
+
+.MainBarFuncs section {
+  cursor: pointer;
+  padding: 1rem;
+  font-size: 1.6rem;
+
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  background-color: var(--list-bg-main-color);
+  border-radius: 5px;
+  color: var(--main-color);
+}
+
+.MainBarFuncs div {
+  font-size: 1.6rem;
+}
+
+.MainBarFuncs div > h4 {
+  font-size: 1.45rem;
+  font-weight: 500;
+  margin-bottom: 0.4rem;
+}
+
+.ButtonContainer {
+  /* text-align: right; */
+}
+
+.ButtonContainer button {
+  cursor: pointer;
+  border: none;
+  color: var(--secondary-color);
+  background-color: var(--main-color);
+
+  font-size: 1.6rem;
+  padding: 1rem 0;
+  border-radius: 10px;
+
+  width: 50%;
+  transition: all 0.2s;
+}
+.MainBarFuncs button:hover {
+  background-color: var(--btn-main-color);
+}
+
+.TimeCard {
+  cursor: pointer;
+}
+
+.TargetContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 2rem;
+}
+
+.TargetContainer .TimeCard {
+  overflow: hidden;
+  border: 1px solid lightgray;
+  background-color: #fff;
+  border-radius: 8px;
+}
+
+.TargetContainer .TimeCard .CardTitleHeader h2 {
+  background-color: var(--main-color);
+  color: var(--secondary-color);
+  font-size: 2.4rem;
+  padding: 0.8rem 0 0.8rem 0.8rem;
+  font-weight: 500;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.TargetContainer .TimeCard .CardMain {
+  margin: 1.2rem 0;
+}
+
+.TargetContainer .TimeCard .CardMain h6 {
+  font-size: 2.8rem;
+  font-weight: 400;
+  text-align: center;
+}
+
+.TargetContainer .TimeCard .CardMain h6 span {
+  font-size: 3.4rem;
+  text-shadow: 1px 3px 0 rgba(0, 0, 0, 0.2);
+}
+
+.TargetContainer .TimeCard .CardFooter {
+  padding: 1rem 1rem;
+  font-size: 1.2rem;
+  color: gray;
+}
+
+.TargetListContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.TargetListContainer .TimeCard {
+  border: 1px solid lightgray;
+  background-color: #fff;
+  padding: 2rem 1rem;
+  border-radius: 10px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.TargetListContainer .CardTitleHeader {
+  width: 30rem;
+}
+
+@media screen and (min-width: 1250px) {
+  .TargetListContainer .CardTitleHeader {
+    width: 35rem;
+  }
+}
+
+@media screen and (min-width: 1600px) {
+  .TargetListContainer .CardTitleHeader {
+    width: 60rem;
+  }
+}
+
+.TargetListContainer .CardTitleHeader h2 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.TargetListContainer .TimeCard .CardMain h6 {
+  flex: 1;
+  text-align: center;
+  font-weight: 500;
+  font-size: 2rem;
+}
+
+.TargetListContainer .TimeCard .CardMain h6 span {
+  display: inline-block;
+  font-size: 2rem;
+  scale: 1.3;
+  text-shadow: 1px 2px 0 rgba(0, 0, 0, 0.2);
+}
+
+.TargetListContainer .TimeCard .CardFooter {
+  font-size: 1.2rem;
+}

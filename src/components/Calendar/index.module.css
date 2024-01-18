@@ -1,0 +1,56 @@
+.Card {
+  background-color: #fff;
+  height: 100%;
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+}
+
+.Title {
+  font-size: 2.6rem;
+  font-weight: 500;
+
+  margin-bottom: 1.2rem;
+}
+
+.Card span {
+  aspect-ratio: 1;
+}
+
+.Calendar {
+  margin-top: 2rem;
+}
+
+.weekTextContainer {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  column-gap: 3rem;
+
+  text-align: center;
+  color: gray;
+  margin-bottom: 0.2rem;
+}
+
+.weekTextContainer span {
+  font-size: 1.6rem;
+  line-height: 2;
+}
+
+.weekContainer {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  column-gap: 3rem;
+
+  text-align: center;
+}
+
+.weekContainer span {
+  font-size: 1.8rem;
+  line-height: 2;
+
+  border-radius: 50%;
+}
+
+.Today {
+  background-color: var(--main-color);
+  color: white;
+}

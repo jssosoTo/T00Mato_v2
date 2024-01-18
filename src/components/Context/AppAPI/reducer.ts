@@ -13,14 +13,10 @@ export default function (
     const switchFullScreenBoolean = !state.isFullScreen;
 
     if (switchFullScreenBoolean) {
-      document.querySelector('header')!.style.display = 'none';
       document.querySelector('aside')!.style.display = 'none';
-      document.querySelector('.timeClock')!.style.height = '100vh';
       document.documentElement.requestFullscreen();
     } else {
-      document.querySelector('header')!.style.display = 'flex';
       document.querySelector('aside')!.style.display = 'block';
-      document.querySelector('.timeClock')!.style.height = 'auto';
       document.exitFullscreen();
     }
 
@@ -35,5 +31,10 @@ export default function (
 
     return { ...state, isFullScreen: false };
   }
+
+  if (action.type === 'DELETE_TODO_CLASS') {
+    return { ...state, todoClassId: action.payload };
+  }
+
   return state;
 }

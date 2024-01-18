@@ -3,9 +3,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: var(--main-color);
+  background-color: var(--secondary-color);
+  background-color: #fff;
   padding: 1rem 1.8rem;
-  color: var(--secondary-color);
+  color: var(--main-color);
+
+  border: 1px solid lightgray;
 }
 
 .infoContainer {

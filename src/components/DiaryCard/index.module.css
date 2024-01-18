@@ -7,6 +7,8 @@
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.115);
 
   border-radius: 15px;
+
+  background-color: #fff;
 }
 .ParagraphContainer:hover {
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);

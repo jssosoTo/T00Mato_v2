@@ -13,7 +13,7 @@ html {
 *::-webkit-scrollbar {
   width: 8px;
   height: 20px;
-  background-color: rgb(255, 255, 255);
+  background-color: var(--bg-color);
 }
 
 *::-webkit-scrollbar-thumb {
@@ -21,8 +21,8 @@ html {
   background-color: rgba(167, 167, 167, 0.7);
 }
 
-:root {
-  --bg-color: rgb(223, 236, 219);
+/* :root {
+  --bg-color: rgb(248, 255, 246);
   --main-color: #087f5b;
   --secondary-color: #eefffa;
   --text-after-color: rgb(89, 255, 0);
@@ -30,6 +30,21 @@ html {
   --dark-main-color: #046044;
   --btn-main-color: #2f8a6f;
   --list-bg-main-color: rgba(8, 127, 91, 0.1);
+} */
+:root {
+  --bg-color: rgb(243 244 246);
+  --main-color: #18181b;
+  --secondary-color: #f1fafb;
+  --text-after-color: #2b2b38;
+  --text-before-color: #47474a;
+  --dark-main-color: #2c2c30;
+  --btn-main-color: #202023;
+  --list-bg-main-color: #ebebeb;
+  --list-bg-sec-color: #c3c3c3;
+}
+
+body {
+  background-color: var(--bg-color);
 }
 /* GLOBAL CSS PROPERTIES */
 @keyframes breath {
@@ -40,6 +55,24 @@ html {
   100% {
     opacity: 0%;
   }
+}
+
+.text-center {
+  text-align: center;
+}
+
+.main-btn {
+  cursor: pointer;
+  border: none;
+  background-color: var(--main-color);
+  color: var(--secondary-color);
+  padding: 0.8em 1.5em;
+  border-radius: 1em;
+  transition: all 0.2s;
+}
+
+.main-btn:hover {
+  background-color: var(--dark-main-color);
 }
 
 .rounded {
@@ -303,6 +336,6 @@ html {
 
 /* MAIN PAGE */
 .main {
-  height: calc(100vh - 6rem);
+  height: 100vh;
 }
 /* MAIN PAGE */

@@ -2,7 +2,11 @@
 import { message } from 'antd';
 import { useEffect, useState } from 'react';
 
-export default function useFetch(func: any, depends: string[]) {
+export default function useFetch(
+  func: any,
+  depends: string[],
+  isRunning: boolean = true
+) {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
 
@@ -10,7 +14,6 @@ export default function useFetch(func: any, depends: string[]) {
     setLoading(true);
     try {
       const res = await func();
-      console.log(res);
       const data = await res.json();
 
       if (data.code !== 0) {
@@ -25,9 +28,11 @@ export default function useFetch(func: any, depends: string[]) {
     }
   };
 
+  const run = async () => (func !== undefined ? fetchData() : null);
+
   useEffect(() => {
-    func !== undefined ? fetchData() : null;
+    func !== undefined && isRunning ? fetchData() : null;
   }, [...depends]);
 
-  return { loading, data };
+  return { loading, data, run };
 }

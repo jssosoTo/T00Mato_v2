@@ -1,0 +1,52 @@
+.colorShow {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background-color: var(--main-color);
+}
+
+.colorContainer {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+
+  gap: 1.5rem;
+}
+
+.colorTitle {
+  font-size: 1.8rem;
+  font-weight: 500;
+}
+
+@media screen and (max-width: 768px) {
+  .colorContainer {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  .colorTitle {
+    font-size: 1.5rem;
+  }
+
+  .colorShow {
+    width: 3rem;
+    height: 3rem;
+  }
+}
+
+.colorContainer > div {
+  cursor: pointer;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  padding: 0.2rem;
+  border: 1px solid gray;
+  transition: all 0.2s;
+}
+
+.colorContainer > div:not(:last-child):hover {
+  border: 3px solid var(--main-color);
+}
+
+.colorContainer > div > div {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}

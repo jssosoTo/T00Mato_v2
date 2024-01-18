@@ -5,10 +5,18 @@ import styles from './index.module.css';
 const ToDoItem: React.FC<ToDoProps> = ({
   id,
   title,
-  tomatoLong,
-  focusTimes,
-  timeLong,
-  giveUpTimes,
+  detail,
+  repeat,
+  repeat_date,
+  repeat_type,
+  fail_repeat,
+  success_repeat,
+  rest_time,
+  focus_time,
+  total_time,
+  create_at,
+  update_at,
+  connections,
   onClick,
   src,
 }) => {
@@ -19,19 +27,27 @@ const ToDoItem: React.FC<ToDoProps> = ({
       className={`rounded ${styles.todoContainer}`}
       onClick={() =>
         onClick({
-          open: true,
+          show: true,
           id,
           title,
-          focusTimes,
-          timeLong,
-          giveUpTimes,
-          tomatoLong,
+          detail,
+          repeat,
+          repeat_date,
+          repeat_type,
+          fail_repeat,
+          success_repeat,
+          rest_time,
+          focus_time,
+          total_time,
+          create_at,
+          update_at,
+          connections,
         })
       }
     >
       <div className={styles.infoContainer}>
         <h2>{title}</h2>
-        <h4>{tomatoLong} 分钟</h4>
+        <h4>{focus_time} 分钟</h4>
       </div>
       <div
         className={styles.startBtn}

@@ -1,17 +1,22 @@
-import { ReactNode, createContext, useReducer } from 'react';
+import { createContext, useReducer } from 'react';
 import reducer from './reducer';
 
 export type stateProp = {
   isExtendFuncLeftBar: boolean;
   isFullScreen: boolean;
+  todoClassId: string;
+  handleCloseRightFuncBar?: () => void;
   switchHeaderLeftBtn?: () => void;
   handleScreenSwitch?: () => void;
+  handleColorChange?: (arg1: string) => void;
   handleScreenClose?: () => void;
+  deleteTodoClass?: (arg1: string) => void;
 };
 
 const initialState = {
   isExtendFuncLeftBar: true,
   isFullScreen: false,
+  todoClassId: '',
 };
 const AppContext = createContext<stateProp>(initialState);
 
@@ -28,6 +33,16 @@ function AppAPI({ children }) {
     dispatch({ type: 'CLOSE_FULL_SCREEN' });
   };
 
+  const handleColorChange = (colorObj: string) => {
+    Object.entries(colorObj).forEach(([property, color]) => {
+      document.querySelector('body')!.style.setProperty(property, color);
+    });
+  };
+
+  const deleteTodoClass = (id: string) => {
+    dispatch({ type: 'DELETE_TODO_CLASS', payload: id });
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -35,6 +50,8 @@ function AppAPI({ children }) {
         switchHeaderLeftBtn,
         handleScreenSwitch,
         handleScreenClose,
+        handleColorChange,
+        deleteTodoClass,
       }}
     >
       {children}

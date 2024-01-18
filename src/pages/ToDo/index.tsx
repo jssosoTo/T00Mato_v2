@@ -1,19 +1,41 @@
 import {
-  CalendarOutlined,
+  ClockCircleOutlined,
+  DeleteOutlined,
   DownOutlined,
+  FieldTimeOutlined,
+  FireOutlined,
+  PlusOutlined,
+  RedoOutlined,
+  RestOutlined,
+  RetweetOutlined,
   ScheduleOutlined,
-  StarOutlined,
   TagOutlined,
   UpOutlined,
 } from '@ant-design/icons';
 import styles from './index.module.css';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import Icon from '@ant-design/icons/lib/components/Icon';
-import moment from 'moment';
-import { weekdayChinese } from '../../globalConfig';
 import ToDoItem from '../../components/ToDoItem';
 import FunctionRightBar from '../../components/FunctionRightBar';
-import { Input } from 'antd';
+import {
+  Checkbox,
+  Col,
+  Form,
+  Input,
+  InputNumber,
+  Radio,
+  Row,
+  Select,
+  Slider,
+} from 'antd';
+import Loading from '../../components/Loading';
+import PageHeader from '../../components/PageHeader';
+import useLoading from '../../../utils/useLoading';
+import request from '../../../utils/request';
+import useFetch from '../../../utils/useFetch';
+import moment from 'moment';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { AppContext } from '../../components/Context/AppAPI/AppAPI';
 
 const SortSvg = () => (
   <svg
@@ -33,100 +55,288 @@ const SortSvg = () => (
 );
 
 type ModalProps = {
-  show?: boolean;
-  id: string | number;
+  id: string;
   title: string;
-  focusTimes: number;
-  timeLong: number;
-  giveUpTimes: number;
-  tomatoLong: number;
+  detail: string;
+  repeat: number | undefined;
+  repeat_date: string;
+  repeat_type: string;
+  fail_repeat: number;
+  rest_time: number;
+  focus_time: number;
+  total_time: number;
+  success_repeat: number;
+  create_at: string | undefined;
+  update_at: string | undefined;
+  connections: string[];
 };
 
 const initialState = {
   show: false,
   id: '',
   title: '',
-  focusTimes: 0,
-  timeLong: 0,
-  giveUpTimes: 0,
-  tomatoLong: 25,
+  detail: '',
+  repeat: undefined,
+  repeat_date: '',
+  repeat_type: 'once',
+  fail_repeat: 0,
+  success_repeat: 0,
+  rest_time: 10,
+  focus_time: 25,
+  total_time: 0,
+  create_at: undefined,
+  update_at: undefined,
+  connections: [],
 };
 
 function ToDo() {
+  const { deleteTodoClass } = useContext(AppContext);
+  const [form] = Form.useForm();
   const [sortModalShow, setSortModalShow] = useState({
     show: false,
     sortWay: 0,
+    title: '排序依据',
   });
-  const [modalContent, setModalContent] = useState<ModalProps>(initialState);
-  const [mockData, setMockData] = useState<ModalProps[]>([
+  const sortArr = [
     {
-      id: 1,
-      title: '吃饭',
-      focusTimes: 2,
-      timeLong: 60,
-      giveUpTimes: 0,
-      tomatoLong: 25,
+      name: '创建时间（最新最前）',
+      icon: <UpOutlined />,
+      onClick: () => setSortModalShow({ ...sortModalShow, sortWay: 0 }),
+      sort: (a: ModalProps, b: ModalProps) =>
+        moment(b['create_at']).valueOf() - moment(a['create_at']).valueOf(),
     },
     {
-      id: 3,
-      title: '吃饭',
-      focusTimes: 2,
-      timeLong: 60,
-      giveUpTimes: 0,
-      tomatoLong: 25,
+      name: '创建时间（最新最前）',
+      icon: <DownOutlined />,
+      onClick: () => setSortModalShow({ ...sortModalShow, sortWay: 1 }),
+      sort: (a: ModalProps, b: ModalProps) =>
+        moment(a['create_at']).valueOf() - moment(b['create_at']).valueOf(),
     },
     {
-      id: 4,
-      title: '吃饭',
-      focusTimes: 2,
-      timeLong: 60,
-      giveUpTimes: 0,
-      tomatoLong: 25,
+      name: '番茄钟时长（升序）',
+      icon: <ClockCircleOutlined />,
+      onClick: () => setSortModalShow({ ...sortModalShow, sortWay: 2 }),
+      sort: (a: ModalProps, b: ModalProps) =>
+        moment(a['focus_time']).valueOf() - moment(b['focus_time']).valueOf(),
     },
     {
-      id: 5,
-      title: '吃饭',
-      focusTimes: 2,
-      timeLong: 60,
-      giveUpTimes: 0,
-      tomatoLong: 25,
+      name: '番茄钟时长（降序）',
+      icon: <ClockCircleOutlined />,
+      onClick: () => setSortModalShow({ ...sortModalShow, sortWay: 3 }),
+      sort: (a: ModalProps, b: ModalProps) =>
+        moment(b['focus_time']).valueOf() - moment(a['focus_time']).valueOf(),
     },
-    {
-      id: 6,
-      title: '吃饭',
-      focusTimes: 2,
-      timeLong: 60,
-      giveUpTimes: 0,
-      tomatoLong: 25,
-    },
-    {
-      id: 7,
-      title: '吃饭',
-      focusTimes: 2,
-      timeLong: 60,
-      giveUpTimes: 0,
-      tomatoLong: 25,
-    },
-    {
-      id: 2,
-      title:
-        'testsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss',
-      focusTimes: 1,
-      timeLong: 60 * 6,
-      giveUpTimes: 0,
-      tomatoLong: 30,
-    },
-  ]);
-
-  const handleChangeInput = (e: ChangeEvent) => {
-    const name = e.target!.name;
-    const value = e.target!.value;
-
-    setModalContent({ ...modalContent, [name]: value });
-  };
+  ];
+  const [modal, setModal] = useState<ModalProps & { show: boolean }>(
+    initialState
+  );
+  const navigate = useNavigate();
+  const { search } = useLocation();
+  const id = search.split('=')[1];
 
   const closeSortModal = () =>
     setSortModalShow((oldModalShow) => ({ ...oldModalShow, show: false }));
+
+  const { loading, run, data } = useFetch(async () => {
+    return request.get('/api/todo?page=1&page_size=100');
+  }, [id]);
+
+  const { loading: todoClassLoading, data: classData } = useFetch(
+    async () => request.get(`/api/todo-group/${id}`),
+    [id],
+    !!id
+  );
+
+  const { loading: addLoading, run: addRun } = useLoading(async () => {
+    const formData = form.getFieldsValue();
+    const { title, repeat, repeat_type, repeat_date } = formData;
+
+    if (!title || !repeat) {
+      throw new Error('请输入标题和重复次数');
+    }
+    const { id } = modal;
+    return id
+      ? request.patch(
+          '/api/todo',
+          repeat_type
+            ? { ...formData, repeat_date: repeat_date && repeat_date.join('') }
+            : formData
+        )
+      : request.post(
+          `/api/todo/${id}`,
+          repeat_type
+            ? { ...formData, repeat_date: repeat_date && repeat_date.join('') }
+            : formData
+        );
+  });
+
+  const { loading: deleteLoading, run: deleteRun } = useLoading(async () => {
+    return request.delete(`/api/todo/${modal.id}`);
+  });
+
+  const ExtendNode = (
+    <FunctionRightBar
+      isExtend={modal.show}
+      handleCloseRightFuncBar={() => setModal({ ...initialState })}
+      hideDelBtn={!modal.id}
+      deleteFunc={async () => {
+        await deleteRun();
+        await run();
+        setModal({ ...initialState });
+      }}
+    >
+      <Form form={form}>
+        <div className={styles.ModalContainer}>
+          <header>
+            <Form.Item noStyle name="title">
+              <Input.TextArea
+                placeholder="请输入你的待办主题"
+                showCount
+                autoSize
+                maxLength={50}
+              />
+            </Form.Item>
+          </header>
+          <main className={styles.MainBarFuncs}>
+            <div>
+              <h4>
+                关联待办集合 <TagOutlined />
+              </h4>
+              <Form.Item noStyle name="connections">
+                <Select
+                  placeholder="请选择你的关联集，以作归类"
+                  style={{
+                    width: '100%',
+                    height: '4rem',
+                  }}
+                />
+              </Form.Item>
+            </div>
+            <div>
+              <h4>
+                番茄钟完成循环次数 <RedoOutlined />
+              </h4>
+              <Form.Item noStyle name="repeat">
+                <InputNumber
+                  controls={false}
+                  min={1}
+                  max={100}
+                  placeholder="每日番茄钟循环次数"
+                  className="flex item-center"
+                  style={{
+                    width: '100%',
+                    height: '4rem',
+                    padding: 0,
+                  }}
+                />
+              </Form.Item>
+            </div>
+            <div>
+              <h4>
+                一个番茄钟专注时长 <FireOutlined />
+              </h4>
+              <div
+                className="flex justify-center item-center"
+                style={{
+                  height: '4rem',
+                  backgroundColor: 'var(--list-bg-main-color)',
+                  borderRadius: '8px',
+                  marginTop: '1rem',
+                }}
+              >
+                <Form.Item noStyle name="focus_time">
+                  <Slider
+                    style={modal.show ? { width: '90%' } : { display: 'none' }}
+                    min={1}
+                    max={180}
+                  />
+                </Form.Item>
+              </div>
+            </div>
+            <div>
+              <h4>
+                一个番茄钟休息时长 <RestOutlined />
+              </h4>
+              <div
+                className="flex justify-center item-center"
+                style={{
+                  height: '4rem',
+                  backgroundColor: 'var(--list-bg-main-color)',
+                  borderRadius: '8px',
+                  marginTop: '1rem',
+                }}
+              >
+                <Form.Item noStyle name="rest_time">
+                  <Slider
+                    style={modal.show ? { width: '90%' } : { display: 'none' }}
+                    min={1}
+                    max={180}
+                  />
+                </Form.Item>
+              </div>
+            </div>
+            <div>
+              <h4>
+                待办重复周期 <RetweetOutlined />
+              </h4>
+              <Form.Item noStyle name="repeat_type">
+                <Radio.Group>
+                  <Radio.Button value="once">单次</Radio.Button>
+                  <Radio.Button value="loop">循环</Radio.Button>
+                </Radio.Group>
+              </Form.Item>
+              <Form.Item noStyle dependencies={['repeat_type']}>
+                {({ getFieldValue }) => {
+                  const isLoop = getFieldValue('repeat_type') === 'loop';
+
+                  return isLoop ? (
+                    <Form.Item noStyle name="repeat_date">
+                      <Checkbox.Group>
+                        <Row>
+                          <Col span={6}>
+                            <Checkbox value="1">周一</Checkbox>
+                          </Col>
+                          <Col span={6}>
+                            <Checkbox value="2">周二</Checkbox>
+                          </Col>
+                          <Col span={6}>
+                            <Checkbox value="3">周三</Checkbox>
+                          </Col>
+                          <Col span={6}>
+                            <Checkbox value="4">周四</Checkbox>
+                          </Col>
+                          <Col span={6}>
+                            <Checkbox value="5">周五</Checkbox>
+                          </Col>
+                          <Col span={6}>
+                            <Checkbox value="6">周六</Checkbox>
+                          </Col>
+                          <Col span={6}>
+                            <Checkbox value="7">周日</Checkbox>
+                          </Col>
+                        </Row>
+                      </Checkbox.Group>
+                    </Form.Item>
+                  ) : null;
+                }}
+              </Form.Item>
+            </div>
+          </main>
+          <div className={styles.ButtonContainer}>
+            <button
+              onClick={async () => {
+                await addRun();
+                await run();
+                setModal({ ...initialState });
+              }}
+            >
+              {modal.id ? '修改' : '添加'}
+            </button>
+          </div>
+        </div>
+      </Form>
+    </FunctionRightBar>
+  );
 
   useEffect(() => {
     document.addEventListener('click', closeSortModal);
@@ -134,126 +344,71 @@ function ToDo() {
     return () => removeEventListener('click', closeSortModal);
   }, []);
 
+  useEffect(() => {
+    form.setFieldsValue(modal);
+  }, [modal, form]);
+
   return (
-    <>
-      <div className="flex-1 flex-all-center auto-scroll">
-        <div className="main-container-xs h-full flex flex-column">
-          <header className={styles.Header}>
-            <div
-              className={`flex justify-between item-center ${styles.HeaderTitle}`}
-            >
-              <h2>
-                <ScheduleOutlined /> 待办
-              </h2>
-              <div className={styles.SortPosition}>
-                <div
-                  className={`${styles.SortContainer} flex item-center gap-1`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSortModalShow({ ...sortModalShow, show: true });
-                  }}
-                >
-                  <Icon component={SortSvg} /> 排序
-                </div>
-                {sortModalShow.show && (
-                  <div className={styles.SortModal}>
-                    <h4>排序依据</h4>
-                    <ul>
-                      <li
-                        className={
-                          sortModalShow.sortWay === 0 ? styles.SelectedWay : ''
-                        }
-                        onClick={() =>
-                          setSortModalShow({ ...sortModalShow, sortWay: 0 })
-                        }
-                      >
-                        <span>
-                          <UpOutlined />
-                        </span>
-                        <span>创建时间（最新最前）</span>
-                      </li>
-                      <li
-                        className={
-                          sortModalShow.sortWay === 1 ? styles.SelectedWay : ''
-                        }
-                        onClick={() =>
-                          setSortModalShow({ ...sortModalShow, sortWay: 1 })
-                        }
-                      >
-                        <span>
-                          <DownOutlined />
-                        </span>
-                        <span>创建时间（最旧最前）</span>
-                      </li>
-                    </ul>
-                  </div>
-                )}
-              </div>
-            </div>
-            <p>
-              {moment().format('YYYY年MM月DD日')} 星期
-              {weekdayChinese[moment().day()]}
-            </p>
-          </header>
-          <main className={`auto-scroll ${styles.MainContainer}`}>
-            {mockData.map((item: ModalProps) => (
+    <Loading
+      loading={addLoading || deleteLoading || loading || todoClassLoading}
+      extendNode={ExtendNode}
+    >
+      <PageHeader
+        title={id ? `待办集：${classData?.title}` : '待办'}
+        icon={<ScheduleOutlined />}
+        sortModalShow={sortModalShow}
+        needTime
+        funcs={[
+          ...(id
+            ? [
+                {
+                  name: '删除',
+                  icon: <DeleteOutlined />,
+                  confirm: {
+                    title: '温馨提醒',
+                    description: '你确认删除吗？',
+                    okText: '确认',
+                    cancelText: '取消',
+                    onConfirm: async () => {
+                      await request.delete(`/api/todo-group/${id}`);
+                      deleteTodoClass?.(id);
+                      navigate('/todo', { replace: true });
+                    },
+                  },
+                },
+              ]
+            : []),
+          {
+            name: '新增',
+            icon: <PlusOutlined />,
+            onClick: () => setModal({ ...initialState, show: true }),
+          },
+          {
+            name: '排序',
+            icon: <Icon component={SortSvg} />,
+            onClick: (e) => {
+              e.stopPropagation();
+              setSortModalShow({ ...sortModalShow, show: true });
+            },
+          },
+        ]}
+        sortArr={sortArr}
+      >
+        <main className={`auto-scroll ${styles.Main}`}>
+          {(data.list || [])
+            .slice()
+            .sort(sortArr[sortModalShow.sortWay].sort)
+            .map((item: ModalProps) => (
               <ToDoItem
                 key={item.id}
                 {...item}
-                onClick={() =>
-                  setModalContent({ ...modalContent, ...item, show: true })
-                }
-                src="/focus"
+                onClick={setModal}
+                src={`/focus?id=${item.id}`}
               />
             ))}
-          </main>
-        </div>
-      </div>
-
-      <FunctionRightBar
-        isExtend={modalContent.show}
-        handleCloseRightFuncBar={() =>
-          setModalContent({ ...modalContent, show: false })
-        }
-        deleteFunc={() => alert('delete')}
-      >
-        <div className={styles.ModalContainer}>
-          <header>
-            <Input.TextArea
-              placeholder="请输入你的主题名称"
-              showCount
-              autoSize
-              id="title"
-              name="title"
-              value={modalContent.title}
-              onChange={handleChangeInput}
-              maxLength={50}
-            />
-          </header>
-          <main className={styles.MainBarFuncs}>
-            <section>
-              <div>
-                <TagOutlined />
-              </div>
-              <div>选择关联待办</div>
-            </section>
-            <section>
-              <div>
-                <CalendarOutlined />
-              </div>
-              <div>添加截止时间</div>
-            </section>
-            <section>
-              <div>
-                <StarOutlined />
-                {/* <StarFilled /> */}
-              </div>
-              <div>在所有番茄钟中显示</div>
-            </section>
-          </main>
-        </div>
-      </FunctionRightBar>
-    </>
+        </main>
+      </PageHeader>
+    </Loading>
   );
 }
 

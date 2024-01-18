@@ -2,7 +2,7 @@
 import { message } from 'antd';
 import { useState } from 'react';
 
-export default function useFetch(func: any) {
+export default function useLoading(func: any) {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
 

@@ -1,18 +1,19 @@
-import { ReactNode, useContext } from 'react';
+import { ReactNode } from 'react';
 import styles from './index.module.css';
 import { DeleteOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
-import { AppContext } from '../Context/AppAPI/AppAPI';
 
 function FunctionRightBar({
   isExtend,
   children,
   handleCloseRightFuncBar,
   deleteFunc,
+  hideDelBtn,
 }: {
   isExtend: boolean;
   children: ReactNode;
   handleCloseRightFuncBar: () => void;
   deleteFunc: () => void;
+  hideDelBtn?: boolean;
 }) {
   return (
     <div className={`${isExtend ? '' : styles.Close} ${styles.RightFuncBar}`}>
@@ -23,7 +24,11 @@ function FunctionRightBar({
           <div onClick={handleCloseRightFuncBar} title="隐藏右边侧边栏">
             <MenuUnfoldOutlined />
           </div>
-          <div onClick={deleteFunc} title="删除数据">
+          <div
+            onClick={deleteFunc}
+            title="删除数据"
+            style={hideDelBtn ? { display: 'none' } : {}}
+          >
             <DeleteOutlined />
           </div>
         </div>
