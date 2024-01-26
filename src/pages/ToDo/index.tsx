@@ -6,6 +6,7 @@ import {
   FireOutlined,
   PlusOutlined,
   RedoOutlined,
+  ReloadOutlined,
   RestOutlined,
   RetweetOutlined,
   ScheduleOutlined,
@@ -20,6 +21,7 @@ import FunctionRightBar from '../../components/FunctionRightBar';
 import {
   Checkbox,
   Col,
+  Empty,
   Form,
   Input,
   InputNumber,
@@ -68,7 +70,7 @@ type ModalProps = {
   success_repeat: number;
   create_at: string | undefined;
   update_at: string | undefined;
-  connections: string[];
+  todo_group: string[];
 };
 
 const initialState = {
@@ -86,7 +88,7 @@ const initialState = {
   total_time: 0,
   create_at: undefined,
   update_at: undefined,
-  connections: [],
+  todo_group: [],
 };
 
 function ToDo() {
@@ -137,35 +139,63 @@ function ToDo() {
   const closeSortModal = () =>
     setSortModalShow((oldModalShow) => ({ ...oldModalShow, show: false }));
 
-  const { loading, run, data } = useFetch(async () => {
-    return request.get('/api/todo?page=1&page_size=100');
-  }, [id]);
-
-  const { loading: todoClassLoading, data: classData } = useFetch(
-    async () => request.get(`/api/todo-group/${id}`),
+  const { loading, run, data } = useFetch(
+    async () => {
+      return request.get('/api/todo');
+    },
     [id],
-    !!id
+    !id
+  );
+
+  const {
+    loading: todoClassLoading,
+    data: classData,
+    run: todoClassRun,
+  } = useFetch(async () => request.get(`/api/todo-group/${id}`), [id], !!id);
+
+  const { loading: groupLoading, data: groupData } = useFetch(
+    async () => request.get('api/todo-group'),
+    [id],
+    true
   );
 
   const { loading: addLoading, run: addRun } = useLoading(async () => {
     const formData = form.getFieldsValue();
-    const { title, repeat, repeat_type, repeat_date } = formData;
+    const {
+      title,
+      repeat,
+      repeat_type,
+      repeat_date,
+      todo_group: todo_group_id,
+    } = formData;
 
     if (!title || !repeat) {
       throw new Error('请输入标题和重复次数');
     }
     const { id } = modal;
     return id
-      ? request.patch(
-          '/api/todo',
+      ? request.put(
+          `/api/todo/${modal.id}`,
           repeat_type
-            ? { ...formData, repeat_date: repeat_date && repeat_date.join('') }
+            ? {
+                ...formData,
+                repeat_date:
+                  repeat_date &&
+                  repeat_date.sort((a: number, b: number) => a - b).join(''),
+                todo_group_id: Number(todo_group_id),
+                todo_group: undefined,
+              }
             : formData
         )
       : request.post(
           `/api/todo/${id}`,
           repeat_type
-            ? { ...formData, repeat_date: repeat_date && repeat_date.join('') }
+            ? {
+                ...formData,
+                repeat_date:
+                  repeat_date &&
+                  repeat_date.sort((a: number, b: number) => a - b).join(''),
+              }
             : formData
         );
   });
@@ -198,16 +228,29 @@ function ToDo() {
             </Form.Item>
           </header>
           <main className={styles.MainBarFuncs}>
-            <div>
+            <div hidden={!!id}>
               <h4>
                 关联待办集合 <TagOutlined />
               </h4>
-              <Form.Item noStyle name="connections">
+              <Form.Item noStyle name="todo_group">
                 <Select
+                  allowClear
+                  loading={groupLoading}
                   placeholder="请选择你的关联集，以作归类"
+                  options={
+                    groupData?.map(
+                      ({
+                        id: value,
+                        title: label,
+                      }: {
+                        id: number;
+                        title: string;
+                      }) => ({ label, value })
+                    ) || []
+                  }
                   style={{
                     width: '100%',
-                    height: '4rem',
+                    minHeight: '4rem',
                   }}
                 />
               </Form.Item>
@@ -326,7 +369,7 @@ function ToDo() {
             <button
               onClick={async () => {
                 await addRun();
-                await run();
+                id ? await todoClassRun() : await run();
                 setModal({ ...initialState });
               }}
             >
@@ -348,17 +391,26 @@ function ToDo() {
     form.setFieldsValue(modal);
   }, [modal, form]);
 
+  useEffect(() => {
+    setModal({ ...initialState });
+  }, [id]);
+
   return (
     <Loading
       loading={addLoading || deleteLoading || loading || todoClassLoading}
       extendNode={ExtendNode}
     >
       <PageHeader
-        title={id ? `待办集：${classData?.title}` : '待办'}
+        title={id ? `待办集：${classData?.title || '(无标题)'}` : '待办'}
         icon={<ScheduleOutlined />}
         sortModalShow={sortModalShow}
         needTime
         funcs={[
+          {
+            name: '刷新',
+            icon: <ReloadOutlined />,
+            onClick: run,
+          },
           ...(id
             ? [
                 {
@@ -395,7 +447,7 @@ function ToDo() {
         sortArr={sortArr}
       >
         <main className={`auto-scroll ${styles.Main}`}>
-          {(data.list || [])
+          {((id ? classData.todos : data.list) || [])
             .slice()
             .sort(sortArr[sortModalShow.sortWay].sort)
             .map((item: ModalProps) => (
@@ -406,6 +458,13 @@ function ToDo() {
                 src={`/focus?id=${item.id}`}
               />
             ))}
+          {!((id ? classData.todos : data.list) || []).length && (
+            <Empty
+              className="m-auto"
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              description={'还没添加待办，快速添加吧~~'}
+            />
+          )}
         </main>
       </PageHeader>
     </Loading>

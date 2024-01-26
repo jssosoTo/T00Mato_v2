@@ -1,8 +1,6 @@
 .Aside {
   overflow: hidden;
-  flex-shrink: none;
   width: 24rem;
-  min-width: 24rem;
 
   border-right: 1px solid rgb(232, 232, 232);
   box-shadow: 0 1px 20px 0px rgba(0, 0, 0, 0.09);
@@ -13,6 +11,8 @@
   flex-direction: column;
 
   background-color: #fff;
+
+  z-index: 999;
 }
 
 .SidebarTitle {
@@ -109,7 +109,11 @@
 }
 
 .Active {
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.ExtendBtn.Active svg {
+  fill: var(--secondary-color);
 }
 
 .ToDoListContainer .ToDoAddContainer {
@@ -168,4 +172,9 @@
 
 .Forbidden {
   cursor: not-allowed;
+}
+
+.Hide {
+  overflow: hidden;
+  height: 0;
 }

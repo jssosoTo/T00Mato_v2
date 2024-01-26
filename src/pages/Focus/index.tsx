@@ -1,15 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import styles from './index.module.css';
 import {
-  FireOutlined,
+  CustomerServiceOutlined,
   FullscreenExitOutlined,
   FullscreenOutlined,
   PauseCircleOutlined,
   PlayCircleOutlined,
   PoweroffOutlined,
   RightOutlined,
+  TagOutlined,
 } from '@ant-design/icons';
-import { Modal, Popconfirm } from 'antd';
+import { Form, Input, Modal, Popconfirm, Select } from 'antd';
 import { useContext, useEffect, useState } from 'react';
 import Son1 from '../../public/audio/song1.mp3';
 import Son2 from '../../public/audio/song2.mp3';
@@ -21,6 +22,8 @@ import { AppContext } from '../../components/Context/AppAPI/AppAPI';
 import useFetch from '../../../utils/useFetch';
 import request from '../../../utils/request';
 import Loading from '../../components/Loading';
+import FunctionRightBar from '../../components/FunctionRightBar';
+import useLoading from '../../../utils/useLoading';
 
 const playMp3 = ['', Son1, Son2, Son3, Son4, Son5];
 
@@ -52,15 +55,32 @@ function SingleMusicItem({
   );
 }
 
-function TimeClock({ minutes = 25, seconds = 0, restMinutes = 1 }) {
+const initialState = {
+  show: false,
+  title: '',
+};
+
+function Focus() {
+  const [form] = Form.useForm();
   const { search } = useLocation();
   const id = search.split('=')[1];
+  const [initialTimes, setInitialTimes] = useState<{
+    minutes: number;
+    seconds: number;
+    restMins: number;
+  }>({
+    minutes: 25,
+    seconds: 0,
+    restMins: 1,
+  });
   const [musicToolShow, setMusicToolShow] = useState<boolean>(false);
-  const [timeH, setTimeH] = useState(minutes);
-  const [timeS, setTimeS] = useState(seconds);
-  const [repeatTimes, setRepeatTimes] = useState<number>(1);
-  const [isPaused, setIsPaused] = useState<boolean>(false);
   const [isRested, setIsRested] = useState<boolean>(false);
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [repeatTimes, setRepeatTimes] = useState<number>(1);
+  const [time, setTime] = useState<{ minutes: number; seconds: number }>(
+    initialTimes
+  );
+  const [singleRepeatTime, setSingleRepeatTime] = useState<number>(0);
   const [modalContent, setModalContent] = useState({
     open: false,
     song: {
@@ -69,6 +89,9 @@ function TimeClock({ minutes = 25, seconds = 0, restMinutes = 1 }) {
       author: '',
     },
   });
+  const [modal, setModal] = useState<{ show: boolean; title: string }>(
+    initialState
+  );
   const { isFullScreen, handleScreenSwitch, handleScreenClose } =
     useContext(AppContext);
 
@@ -82,53 +105,166 @@ function TimeClock({ minutes = 25, seconds = 0, restMinutes = 1 }) {
     !!id
   );
 
+  const { loading: groupLoading, data: groupData } = useFetch(
+    async () => request.get('/api/todo-group'),
+    [],
+    !id
+  );
+
+  const { run } = useLoading(async () =>
+    request.post(`api/todo/repeat/${id}`, {})
+  );
+
+  const switchStatus = () => {
+    const isLastRepeat = !isRested && repeatTimes === 1;
+    if (isLastRepeat && id) {
+      // 调用次数加一接口
+      // run();
+      console.log(initialTimes.minutes - time.minutes);
+      handleScreenClose!();
+      navigate('/todo', { replace: true });
+    } else if (isLastRepeat) {
+      // 主页直接进入没有指定id的情况
+      setIsPaused(true);
+      setModal({ ...initialState, show: true });
+
+      console.log(initialTimes.minutes - time.minutes);
+    } else if (!isRested) {
+      // 不是循环最后一次
+      // 调用次数加一接口
+      // run();
+      console.log(initialTimes.minutes - time.minutes);
+
+      // 设置休息时间
+      setTime({ ...initialTimes, minutes: initialTimes.restMins });
+      setRepeatTimes(repeatTimes - 1);
+    } else {
+      // 休息时长跳转专注时长
+      setTime({ ...initialTimes });
+    }
+
+    setIsRested(!isRested);
+  };
+
   const formatTick = () => {
-    if (isPaused) return;
-    setTimeS((oldS) => {
-      if (oldS === 0) {
-        setTimeH((timeH) => {
-          if (timeH === 0) return 0;
-          return timeH - 1;
-        });
-        return 59;
+    setTime(
+      ({
+        minutes: preMinutes,
+        seconds: preSeconds,
+      }: {
+        minutes: number;
+        seconds: number;
+      }) => {
+        if (preSeconds !== 0) {
+          return { minutes: preMinutes, seconds: preSeconds - 1 };
+        } else if (preMinutes !== 0) {
+          return { minutes: preMinutes - 1, seconds: 59 };
+        }
+
+        return { minutes: 0, seconds: 0 };
       }
-      return oldS - 1;
-    });
-  };
-
-  const setDataFocusTime = () => {
-    setIsRested(false);
-    setRepeatTimes(data.repeat || 1);
-    setTimeH(data.focus_time || minutes);
-    setTimeS(data.focus_time ? 0 : seconds);
-  };
-
-  const setDataRestTime = () => {
-    setIsRested(true);
-    setTimeH(data.rest_time || restMinutes);
-    setTimeS(seconds);
-    setRepeatTimes(repeatTimes - 1);
+    );
   };
 
   useEffect(() => {
-    const timer = setInterval(formatTick, 1000);
-    return () => clearInterval(timer);
+    let timerId: any;
+    if (!isPaused) {
+      timerId = setInterval(formatTick, 1000);
+    } else {
+      clearInterval(timerId);
+    }
+
+    return () => clearInterval(timerId);
   }, [isPaused]);
 
   useEffect(() => {
-    if (timeH === 0 && timeS === 0) {
-      if (isRested) {
-        setDataFocusTime();
-      } else {
-        setDataRestTime();
-      }
-    }
-  }, [timeS]);
+    if (time.minutes === 0 && time.seconds === 0) switchStatus();
+  }, [time]);
 
-  useEffect(setDataFocusTime, [data]);
+  useEffect(() => {
+    console.log({
+      minutes: data.focus_time || initialTimes.minutes,
+      seconds: 0,
+      restMins: data.rest_time || initialTimes.restMins,
+    });
+    setInitialTimes({
+      minutes: data.focus_time || initialTimes.minutes,
+      seconds: 0,
+      restMins: data.rest_time || initialTimes.restMins,
+    });
+
+    setTime({
+      minutes: data.focus_time || initialTimes.minutes,
+      seconds: 0,
+    });
+    setRepeatTimes(data.repeat || 1);
+    setIsRested(false);
+  }, [data]);
+
+  const ExtendNode = (
+    <FunctionRightBar
+      isExtend={modal.show}
+      handleCloseRightFuncBar={() => setModal({ ...initialState })}
+      hideDelBtn={true}
+      deleteFunc={() => {}}
+    >
+      <Form form={form}>
+        <div className={styles.ModalContainer}>
+          <header>
+            <Form.Item noStyle name="title">
+              <Input.TextArea
+                placeholder="请输入你的待办主题"
+                showCount
+                autoSize
+                maxLength={50}
+              />
+            </Form.Item>
+          </header>
+          <main className={styles.MainBarFuncs}>
+            <div>
+              <h4>
+                关联待办集合 <TagOutlined />
+              </h4>
+              <Form.Item noStyle name="todo_group">
+                <Select
+                  allowClear
+                  loading={groupLoading}
+                  placeholder="请选择你的关联集，以作归类"
+                  options={
+                    groupData?.map(
+                      ({
+                        id: value,
+                        title: label,
+                      }: {
+                        id: number;
+                        title: string;
+                      }) => ({ label, value })
+                    ) || []
+                  }
+                  style={{
+                    width: '100%',
+                    minHeight: '4rem',
+                  }}
+                />
+              </Form.Item>
+            </div>
+          </main>
+          <div className={styles.ButtonContainer}>
+            <button
+              onClick={async () => {
+                setModal({ ...initialState });
+              }}
+            >
+              添加
+            </button>
+          </div>
+        </div>
+      </Form>
+    </FunctionRightBar>
+  );
 
   return (
-    <Loading loading={loading}>
+    <Loading loading={loading} extendNode={ExtendNode}>
       <div className={`${styles.ClockPage} timeClock`}>
         {modalContent.song && (
           <div
@@ -209,17 +345,17 @@ function TimeClock({ minutes = 25, seconds = 0, restMinutes = 1 }) {
                 // }}
               ></div>
               <div className={styles.ClockStyle}>
-                <h4>xxx</h4>
+                <h4>{data?.title || '无标题'}</h4>
                 <h2>
-                  {String(timeH).padStart(2, '0').slice(0, 2)}:
-                  {String(timeS).padStart(2, '0').slice(0, 2)}
+                  {String(time.minutes).padStart(2, '0')}:
+                  {String(time.seconds).padStart(2, '0')}
                 </h2>
                 <h3>{isRested ? '休息中' : '专注中'}</h3>
               </div>
             </div>
           </div>
         </main>
-        <section className={styles.TimeCountdown}>
+        <section className={styles.TimeCountdown} hidden={!id}>
           <div>
             <p>考研sssssssssssssssssssssssssssss</p>
             <h4>
@@ -247,7 +383,7 @@ function TimeClock({ minutes = 25, seconds = 0, restMinutes = 1 }) {
             onClick={() => setModalContent({ ...modalContent, open: true })}
             title="音乐功能"
           >
-            <FireOutlined />
+            <CustomerServiceOutlined />
           </div>
           <div title="结束功能">
             <Popconfirm
@@ -260,18 +396,7 @@ function TimeClock({ minutes = 25, seconds = 0, restMinutes = 1 }) {
               }
               okText="确认"
               cancelText="取消"
-              onConfirm={() => {
-                if (isRested && repeatTimes === 0) {
-                  handleScreenClose!();
-                  navigate('/todo', {
-                    replace: true,
-                  });
-                } else if (isRested) {
-                  setDataFocusTime();
-                } else {
-                  setDataRestTime();
-                }
-              }}
+              onConfirm={switchStatus}
             >
               <PoweroffOutlined />
             </Popconfirm>
@@ -331,4 +456,4 @@ function TimeClock({ minutes = 25, seconds = 0, restMinutes = 1 }) {
   );
 }
 
-export default TimeClock;
+export default Focus;

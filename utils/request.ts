@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export default {
-  post: (url: string, data: any) =>
+  post: (url: string, data?: any) =>
     fetch(url, {
       method: 'POST',
       headers: {

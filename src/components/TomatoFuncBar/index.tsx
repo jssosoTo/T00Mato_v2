@@ -5,6 +5,7 @@ import {
   AppstoreAddOutlined,
   BarsOutlined,
   BookOutlined,
+  DownOutlined,
   HeatMapOutlined,
   HourglassOutlined,
   LoadingOutlined,
@@ -21,8 +22,8 @@ import { Spin } from 'antd';
 
 function TomatoFuncBar({ isShow }: { isShow: boolean }) {
   const [title, setTitle] = useState<string>('');
-  const { handleCloseRightFuncBar, switchHeaderLeftBtn, todoClassId } =
-    useContext(AppContext);
+  const [fold, setFold] = useState<boolean>(false);
+  const { switchHeaderLeftBtn, todoClassId } = useContext(AppContext);
   const { pathname, search } = useLocation();
 
   const { data, run, loading } = useFetch(async () => {
@@ -33,16 +34,15 @@ function TomatoFuncBar({ isShow }: { isShow: boolean }) {
     request.post('/api/todo-group', { title })
   );
 
-  console.log(search.slice(4));
-
-  const ListItem = ({ id, title }: { id: string; title: string }) => (
+  const ListItem = ({ id, title }: { id: number; title: string }) => (
     <li>
       <Link
         className={`${
-          pathname === `/todo` && id === search.slice(4) ? styles.Active : ''
+          pathname === `/todo` && String(id) === search.slice(4)
+            ? styles.Active
+            : ''
         } flex justify-between`}
         to={`/todo?id=${id}`}
-        onClick={handleCloseRightFuncBar}
       >
         <span>{title}</span>
         <span>
@@ -74,7 +74,6 @@ function TomatoFuncBar({ isShow }: { isShow: boolean }) {
                 pathname === '/todo' && search.length === 0 ? styles.Active : ''
               } flex justify-between`}
               to="/todo"
-              onClick={handleCloseRightFuncBar}
             >
               <span>待办</span>{' '}
               <span>
@@ -88,7 +87,6 @@ function TomatoFuncBar({ isShow }: { isShow: boolean }) {
                 pathname === '/futureTime' ? styles.Active : ''
               } flex justify-between`}
               to="/futureTime"
-              onClick={handleCloseRightFuncBar}
             >
               <span>未来时间轴</span>
               <span>
@@ -102,7 +100,6 @@ function TomatoFuncBar({ isShow }: { isShow: boolean }) {
                 pathname === '/data' ? styles.Active : ''
               } flex justify-between`}
               to="/data"
-              onClick={handleCloseRightFuncBar}
             >
               <span>数据统计</span>
               <span>
@@ -116,7 +113,6 @@ function TomatoFuncBar({ isShow }: { isShow: boolean }) {
                 pathname === '/focus' ? styles.Active : ''
               } flex justify-between`}
               to="/focus"
-              onClick={handleCloseRightFuncBar}
             >
               <span>专注模式</span>
               <span>
@@ -130,7 +126,6 @@ function TomatoFuncBar({ isShow }: { isShow: boolean }) {
                 pathname.startsWith('/diary') ? styles.Active : ''
               } flex justify-between`}
               to="/diary"
-              onClick={handleCloseRightFuncBar}
             >
               <span>日记</span>
               <span>
@@ -144,7 +139,6 @@ function TomatoFuncBar({ isShow }: { isShow: boolean }) {
                 pathname === '/myInfo' ? styles.Active : ''
               } flex justify-between`}
               to="/myInfo"
-              onClick={handleCloseRightFuncBar}
             >
               <span>我的</span>{' '}
               <span>
@@ -168,6 +162,17 @@ function TomatoFuncBar({ isShow }: { isShow: boolean }) {
                   />
                 </div>
                 <div
+                  className={`${styles.addBtnContainer}`}
+                  onClick={() => setFold(!fold)}
+                >
+                  <DownOutlined
+                    style={{
+                      transition: 'all .3s',
+                      ...(fold && { rotate: '180deg' }),
+                    }}
+                  />
+                </div>
+                <div
                   className={`${styles.addBtnContainer} ${
                     addLoading ? styles.Forbidden : ''
                   }`}
@@ -184,7 +189,7 @@ function TomatoFuncBar({ isShow }: { isShow: boolean }) {
                   {addLoading ? <LoadingOutlined /> : <AppstoreAddOutlined />}
                 </div>
               </div>
-              <ul className={styles.ToDoClass}>
+              <ul className={`${styles.ToDoClass} ${fold && styles.Hide}`}>
                 {data.map((item: { id: string; title: string }) => (
                   <ListItem key={item.id} {...item} />
                 ))}

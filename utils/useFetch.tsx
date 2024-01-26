@@ -31,6 +31,7 @@ export default function useFetch(
   const run = async () => (func !== undefined ? fetchData() : null);
 
   useEffect(() => {
+    setData([]);
     func !== undefined && isRunning ? fetchData() : null;
   }, [...depends]);
 

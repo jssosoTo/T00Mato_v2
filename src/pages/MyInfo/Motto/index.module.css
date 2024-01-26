@@ -1,0 +1,110 @@
+.MottoContainer {
+  grid-column: 3/ -1;
+
+  display: flex;
+  flex-direction: column;
+
+  height: 30rem;
+}
+
+.MottoContainer h2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.MottoContainer > h2 div:last-child button {
+  padding: 0.6rem 1.2rem;
+}
+
+.MottoContainer > h2 div:last-child svg {
+  font-size: 2rem;
+}
+
+.MottoContainer .PictureBtn {
+  margin-top: 1rem;
+  width: 100%;
+}
+
+.MottoContainer {
+  background-color: #fff;
+  border-radius: 1rem;
+
+  padding: 1.6rem;
+}
+
+.MottoContainer > h2 {
+  font-size: 2.2rem;
+  font-weight: 500;
+}
+
+.MottoInputContainer {
+  overflow: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+
+  margin-top: 2rem;
+}
+
+.MottoInputContainer {
+  margin-top: 1.2rem;
+}
+
+.MottoInputContainer {
+  margin-top: 1.2rem;
+}
+
+.AddContainer {
+  width: 60%;
+  display: flex;
+}
+
+.AddContainer button {
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+}
+
+.AddContainer input {
+  flex: 1;
+
+  border-right: none;
+  border-top-left-radius: 1rem;
+  border-bottom-left-radius: 1rem;
+  padding: 0 1rem;
+}
+
+.ListItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  padding: 1rem;
+
+  font-size: 1.5rem;
+}
+
+.ListItemTitle {
+  flex: 1;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.ListItem:hover .ButtonContainer button {
+  display: block;
+}
+
+.ButtonContainer button {
+  display: none;
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+  font-size: 1.65rem;
+}
+
+.ButtonContainer button svg {
+  fill: orangered;
+}

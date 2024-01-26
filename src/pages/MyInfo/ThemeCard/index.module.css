@@ -17,21 +17,6 @@
   font-weight: 500;
 }
 
-@media screen and (max-width: 768px) {
-  .colorContainer {
-    grid-template-columns: repeat(6, 1fr);
-  }
-
-  .colorTitle {
-    font-size: 1.5rem;
-  }
-
-  .colorShow {
-    width: 3rem;
-    height: 3rem;
-  }
-}
-
 .colorContainer > div {
   cursor: pointer;
   aspect-ratio: 1;
@@ -49,4 +34,49 @@
   width: 100%;
   height: 100%;
   border-radius: 50%;
+}
+
+@media screen and (max-width: 768px) {
+  .colorContainer {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  .colorTitle {
+    font-size: 1.5rem;
+  }
+
+  .colorShow {
+    width: 3rem;
+    height: 3rem;
+  }
+}
+
+@media screen and (min-width: 1300px) {
+  .colorContainer {
+    grid-template-columns: repeat(12, 1fr);
+  }
+
+  .colorTitle {
+    font-size: 1.5rem;
+  }
+
+  .colorShow {
+    width: 3rem;
+    height: 3rem;
+  }
+}
+
+@media screen and (min-width: 1400px) {
+  .colorContainer {
+    grid-template-columns: repeat(16, 1fr);
+  }
+
+  .colorTitle {
+    font-size: 1.5rem;
+  }
+
+  .colorShow {
+    width: 3rem;
+    height: 3rem;
+  }
 }

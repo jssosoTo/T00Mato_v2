@@ -6,13 +6,15 @@ import TomatoFuncBar from './components/TomatoFuncBar';
 import { AppContext } from './components/Context/AppAPI/AppAPI';
 import Diary from './pages/Diary';
 import DetailDiary from './pages/Diary/DetailDiary';
-import TimeClock from './pages/TimeClock';
+import Focus from './pages/Focus';
 // import FutureTime from './pages/FutureTime';
 import DataPage from './pages/DataPage';
 import ToDo from './pages/ToDo';
 // import DemoHeatmap from './components/DemoHeatMap';
 import CountdownTime from './pages/CountdownTime';
 import MyInfo from './pages/MyInfo';
+import Login from './pages/Login';
+import Error from './pages/Error';
 
 type RoutesProp = {
   path: string;
@@ -49,7 +51,7 @@ const routes: RoutesProp[] = [
   },
   {
     path: '/focus',
-    element: <TimeClock />,
+    element: <Focus />,
   },
   {
     path: '/diary',
@@ -69,6 +71,10 @@ const routes: RoutesProp[] = [
     path: '/myInfo',
     element: <MyInfo />,
   },
+  {
+    path: '*',
+    element: <Error />,
+  },
 ];
 
 function App() {
@@ -76,7 +82,7 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/login" element={<>Login Page</>}></Route>
+      <Route path="/login" element={<Login />}></Route>
       <Route
         path="*"
         element={

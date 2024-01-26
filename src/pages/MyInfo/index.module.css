@@ -1,14 +1,11 @@
-.ProfileContainer,
-.PasswordChangeContainer {
+.ProfileContainer {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   column-gap: 2rem;
 }
 
 .InfoContainer,
-.PictureContainer,
-.PasswordContainer,
-.MottoContainer {
+.PictureContainer {
   background-color: #fff;
   border-radius: 1rem;
 
@@ -17,38 +14,11 @@
 
 .PictureContainer {
   grid-column: 1 / 3;
-}
-
-.MottoContainer {
-  grid-column: 3/ -1;
-
-  display: flex;
-  flex-direction: column;
-}
-
-.MottoContainer h2 {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.MottoContainer > h2 div:last-child button {
-  padding: 0.6rem 1.2rem;
-}
-
-.MottoContainer > h2 div:last-child svg {
-  font-size: 2rem;
-}
-
-.MottoContainer .PictureBtn {
-  margin-top: 1rem;
-  width: 100%;
+  height: 30rem;
 }
 
 .PictureContainer > h2,
-.InfoContainer > h2,
-.PasswordContainer > h2,
-.MottoContainer > h2 {
+.InfoContainer > h2 {
   font-size: 2.2rem;
   font-weight: 500;
 }
@@ -70,18 +40,13 @@
   width: 80%;
 }
 
-.InfoInputContainer,
-.MottoInputContainer {
+.InfoInputContainer {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
 
   margin-top: 2rem;
-}
-
-.MottoInputContainer {
-  margin-top: 1.2rem;
 }
 
 .InfoInputContainer input {
@@ -93,8 +58,7 @@
   border: 1px solid gray;
 }
 
-.InfoContainer .PictureBtn,
-.PasswordContainer .PictureBtn {
+.InfoContainer .PictureBtn {
   width: 100%;
 }
 
@@ -103,17 +67,38 @@
   margin-bottom: 2rem;
 }
 
-.PasswordContainer .InfoInputContainer {
-  margin-bottom: 2rem;
-}
-
-.PasswordContainer {
-  grid-column: 1 / -3;
-}
-
 .InfoContainer {
   grid-column: -3 / -1;
 
   display: flex;
   flex-direction: column;
+}
+
+.InfoListItem {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+
+  font-size: 1.6rem;
+
+  padding-left: 1rem;
+}
+
+.InfoListItem h4 {
+  font-weight: 500;
+}
+
+.InfoListItem input {
+  outline: none;
+  height: 3rem;
+  width: 40%;
+  border: none;
+  border-bottom: 1px solid gray;
+  border-radius: 0;
+}
+
+.InfoTitleContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }

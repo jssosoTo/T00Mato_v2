@@ -1,0 +1,87 @@
+.LoginPage {
+  height: 100vh;
+  background-size: cover;
+  background-position: top center;
+  background-image: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0.5),
+      rgba(0, 0, 0, 0.5)
+    ),
+    url(../../assets/Home.jpg);
+  /* background-color: #fff; */
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.LoginContainer {
+  width: 50rem;
+  padding: 5rem 4rem;
+  background-color: #fff;
+
+  border-radius: 1.6rem;
+  border: 1px solid gray;
+}
+
+.LoginContainer h2 {
+  text-align: center;
+  font-size: 2.4rem;
+  font-weight: 600;
+}
+
+.LoginContainer h1 {
+  text-align: center;
+  font-size: 3rem;
+  margin-top: 1.2rem;
+  font-weight: 500;
+}
+
+@keyframes loading {
+  0% {
+    border-color: transparent;
+  }
+
+  100% {
+    border-color: rgb(44, 235, 248);
+  }
+}
+
+.Loading {
+  overflow: hidden;
+  position: relative;
+  border-style: solid;
+  border-width: 4px;
+  border-color: transparent;
+  animation: loading 0.5s alternate-reverse backwards infinite;
+}
+
+.Loading::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(250, 250, 250, 0.4);
+}
+
+.BackContainer {
+  margin-top: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1.6rem;
+  padding: 0.6rem;
+  border: 1px solid lightgray;
+  border-radius: 100px;
+}
+
+.ColorImg {
+  aspect-ratio: 1;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: var(--main-color);
+}

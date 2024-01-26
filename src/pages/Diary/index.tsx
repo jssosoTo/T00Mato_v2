@@ -4,6 +4,7 @@ import {
   BookOutlined,
   DownOutlined,
   EditOutlined,
+  ReloadOutlined,
   UpOutlined,
 } from '@ant-design/icons';
 import moment from 'moment';
@@ -13,7 +14,7 @@ import DiaryCard from '../../components/DiaryCard';
 import { useNavigate } from 'react-router-dom';
 import request from '../../../utils/request';
 import useFetch from '../../../utils/useFetch';
-import { Spin } from 'antd';
+import { Empty, Spin } from 'antd';
 
 export type DataProps = {
   id: number;
@@ -56,76 +57,82 @@ function Diary() {
     return () => removeEventListener('click', closeSortModal);
   }, []);
 
-  const { loading, data } = useFetch(async () => {
+  const { loading, data, run } = useFetch(async () => {
     return request.get('api/notes');
   }, []);
 
   return (
     <div className="flex-1 flex justify-center auto-scroll">
       <div className="main-container-xs">
-        <Spin spinning={loading}>
-          <header className={`${styles.HeaderTitle}`}>
-            <div className="flex justify-between item-center">
-              <h2>
-                <BookOutlined /> 日记
-              </h2>
-              <div className={styles.SortPosition}>
-                <div
-                  className={`${styles.SortContainer} flex item-center gap-1`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSortModalShow({ ...sortModalShow, show: true });
-                  }}
-                >
-                  <Icon component={SortSvg} /> 排序
-                </div>
-                <div
-                  className={`${styles.SortContainer} flex item-center gap-1`}
-                  onClick={() => navigate('/diary/detail')}
-                >
-                  <EditOutlined /> 写日记
-                </div>
-                {sortModalShow.show && (
-                  <div className={styles.SortModal}>
-                    <h4>排序依据</h4>
-                    <ul>
-                      <li
-                        className={
-                          sortModalShow.sortWay === 0 ? styles.SelectedWay : ''
-                        }
-                        onClick={() =>
-                          setSortModalShow({ ...sortModalShow, sortWay: 0 })
-                        }
-                      >
-                        <span>
-                          <UpOutlined />
-                        </span>
-                        <span>创建时间（最新最前）</span>
-                      </li>
-                      <li
-                        className={
-                          sortModalShow.sortWay === 1 ? styles.SelectedWay : ''
-                        }
-                        onClick={() =>
-                          setSortModalShow({ ...sortModalShow, sortWay: 1 })
-                        }
-                      >
-                        <span>
-                          <DownOutlined />
-                        </span>
-                        <span>创建时间（最旧最前）</span>
-                      </li>
-                    </ul>
-                  </div>
-                )}
+        <header className={`${styles.HeaderTitle}`}>
+          <div className="flex justify-between item-center">
+            <h2>
+              <BookOutlined /> 日记
+            </h2>
+            <div className={styles.SortPosition}>
+              <div
+                className={`${styles.SortContainer} flex item-center gap-1`}
+                onClick={run}
+              >
+                <ReloadOutlined /> 刷新
               </div>
+              <div
+                className={`${styles.SortContainer} flex item-center gap-1`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSortModalShow({ ...sortModalShow, show: true });
+                }}
+              >
+                <Icon component={SortSvg} /> 排序
+              </div>
+              <div
+                className={`${styles.SortContainer} flex item-center gap-1`}
+                onClick={() => navigate('/diary/detail')}
+              >
+                <EditOutlined /> 写日记
+              </div>
+              {sortModalShow.show && (
+                <div className={styles.SortModal}>
+                  <h4>排序依据</h4>
+                  <ul>
+                    <li
+                      className={
+                        sortModalShow.sortWay === 0 ? styles.SelectedWay : ''
+                      }
+                      onClick={() =>
+                        setSortModalShow({ ...sortModalShow, sortWay: 0 })
+                      }
+                    >
+                      <span>
+                        <UpOutlined />
+                      </span>
+                      <span>创建时间（最新最前）</span>
+                    </li>
+                    <li
+                      className={
+                        sortModalShow.sortWay === 1 ? styles.SelectedWay : ''
+                      }
+                      onClick={() =>
+                        setSortModalShow({ ...sortModalShow, sortWay: 1 })
+                      }
+                    >
+                      <span>
+                        <DownOutlined />
+                      </span>
+                      <span>创建时间（最旧最前）</span>
+                    </li>
+                  </ul>
+                </div>
+              )}
             </div>
-            <p>
-              {moment().format('YYYY年MM月DD日')} 星期
-              {weekdayChinese[moment().day()]}
-            </p>
-          </header>
+          </div>
+          <p>
+            {moment().format('YYYY年MM月DD日')} 星期
+            {weekdayChinese[moment().day()]}
+          </p>
+        </header>
 
+        <Spin spinning={loading}>
           <main className={styles.DiaryContainer}>
             {data
               .slice()
@@ -141,6 +148,13 @@ function Diary() {
               .map((item: DataProps) => (
                 <DiaryCard key={item.id} {...item} />
               ))}
+            {!(data || []).length && (
+              <Empty
+                className="m-auto grid-col-3"
+                image={Empty.PRESENTED_IMAGE_SIMPLE}
+                description={'还没添加待办，快速添加吧~~'}
+              />
+            )}
           </main>
         </Spin>
       </div>

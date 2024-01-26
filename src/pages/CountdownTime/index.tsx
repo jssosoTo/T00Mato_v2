@@ -6,6 +6,7 @@ import {
   HourglassOutlined,
   LayoutOutlined,
   PlusOutlined,
+  ReloadOutlined,
   TagOutlined,
   UnorderedListOutlined,
 } from '@ant-design/icons';
@@ -16,7 +17,7 @@ import { useEffect, useState } from 'react';
 import FunctionRightBar from '../../components/FunctionRightBar';
 import dateFormatToChinese from '../../../utils/dateFormatToChinese';
 import moment from 'moment';
-import { DatePicker, Form, Input, TreeSelect } from 'antd';
+import { DatePicker, Empty, Form, Input, TreeSelect } from 'antd';
 import useLoading from '../../../utils/useLoading';
 import dayjs from 'dayjs';
 
@@ -174,6 +175,11 @@ function CountdownTime() {
         sortModalShow={sortModalShow}
         funcs={[
           {
+            name: '刷新',
+            icon: <ReloadOutlined />,
+            onClick: run,
+          },
+          {
             name: '新增',
             icon: <PlusOutlined />,
             onClick: () => setModal({ ...initialState, show: true }),
@@ -202,7 +208,7 @@ function CountdownTime() {
         icon={<HourglassOutlined />}
         needTime
       >
-        <main className={`auto-scroll`}>
+        <main className={`auto-scroll flex-1`}>
           <div
             className={
               sortModalShow.sortWay === 0
@@ -236,6 +242,13 @@ function CountdownTime() {
               );
             })}
           </div>
+          {!(data || []).length && (
+            <Empty
+              className="m-auto"
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              description={'还没添加待办，快速添加吧~~'}
+            />
+          )}
         </main>
       </PageHeader>
     </Loading>

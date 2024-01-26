@@ -1,0 +1,38 @@
+/* 仿谷歌输入框 */
+.GoogleInput {
+  position: relative;
+  text-align: center;
+  font-size: 2rem;
+}
+
+.GoogleInput input {
+  outline-color: var(--main-color);
+  border: 1px solid lightgray;
+  min-height: 5rem;
+  width: 100%;
+  height: 100%;
+  padding: 0 1.2rem;
+  border-radius: 0.5rem;
+  font-size: 2rem;
+}
+
+.GoogleInputPlaceholder {
+  position: absolute;
+  transition: all 0.2s;
+  padding: 0 0.5rem;
+  left: 0.7rem;
+}
+
+.HideInput {
+  top: 50%;
+
+  transform: translateY(-50%);
+}
+
+.LabelInput {
+  font-size: 1.4rem;
+  top: 0;
+  transform: translateY(-50%);
+  background-color: #fff;
+}
+/* 仿谷歌输入框 */

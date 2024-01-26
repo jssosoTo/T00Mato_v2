@@ -162,7 +162,7 @@
 }
 
 .MusicContainer {
-  padding: 5rem 3rem;
+  padding: 3rem 1.5rem;
 
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -171,11 +171,11 @@
 
 .SingleMusicContainer {
   cursor: pointer;
-  height: 6rem;
+  height: 8rem;
 
   display: flex;
   align-items: center;
-  gap: 0.8rem;
+  gap: 1.2rem;
   padding: 1.5rem 1.5rem;
   border-radius: 1rem;
   background-color: #eee;
@@ -195,7 +195,7 @@
 }
 
 .SingleMusicContainer h4 {
-  font-size: 1.2rem;
+  font-size: 1.8rem;
 }
 
 .Play {
@@ -303,4 +303,55 @@
   transform: translate(-50%, -50%);
   width: 2rem;
   height: 2rem;
+}
+
+/* 侧边栏 */
+.ModalContainer {
+  width: 25rem;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+}
+.MainBarFuncs {
+  flex: 1;
+  max-height: 70vh;
+  overflow: auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin-top: 3rem;
+}
+
+.MainBarFuncs div {
+  font-size: 1.6rem;
+}
+
+.MainBarFuncs div > h4 {
+  font-size: 1.45rem;
+  font-weight: 500;
+  margin-bottom: 0.4rem;
+}
+
+.ButtonContainer {
+  /* text-align: right; */
+  margin-top: 1rem;
+}
+
+.ButtonContainer button {
+  cursor: pointer;
+  border: none;
+  color: var(--secondary-color);
+  background-color: var(--main-color);
+
+  font-size: 1.6rem;
+  padding: 1rem 0;
+  border-radius: 10px;
+
+  width: 50%;
+  transition: all 0.2s;
+}
+.MainBarFuncs button:hover {
+  background-color: var(--btn-main-color);
 }

@@ -5,7 +5,6 @@ export type stateProp = {
   isExtendFuncLeftBar: boolean;
   isFullScreen: boolean;
   todoClassId: string;
-  handleCloseRightFuncBar?: () => void;
   switchHeaderLeftBtn?: () => void;
   handleScreenSwitch?: () => void;
   handleColorChange?: (arg1: string) => void;

@@ -16,7 +16,7 @@ export default function (
       document.querySelector('aside')!.style.display = 'none';
       document.documentElement.requestFullscreen();
     } else {
-      document.querySelector('aside')!.style.display = 'block';
+      document.querySelector('aside')!.style.display = 'flex';
       document.exitFullscreen();
     }
 
@@ -24,8 +24,7 @@ export default function (
   }
 
   if (action.type === 'CLOSE_FULL_SCREEN') {
-    document.querySelector('header')!.style.display = 'flex';
-    document.querySelector('aside')!.style.display = 'block';
+    document.querySelector('aside')!.style.display = 'flex';
     document.querySelector('.timeClock')!.style.height = 'auto';
     document.exitFullscreen();
 

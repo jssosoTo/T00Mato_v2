@@ -16,7 +16,7 @@ const ToDoItem: React.FC<ToDoProps> = ({
   total_time,
   create_at,
   update_at,
-  connections,
+  todo_group,
   onClick,
   src,
 }) => {
@@ -41,7 +41,7 @@ const ToDoItem: React.FC<ToDoProps> = ({
           total_time,
           create_at,
           update_at,
-          connections,
+          todo_group: todo_group || [],
         })
       }
     >
