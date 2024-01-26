@@ -12,6 +12,5 @@ export default defineConfig({
       },
     },
   },
-  base: 'https://bored-woolens-fly.cyclic.app',
   plugins: [react()],
 });
