@@ -143,7 +143,7 @@ function Focus() {
       repeat: 1,
       todo_group: undefined,
       repeat_type: 'once',
-      repeat_date: undefined,
+      repeat_date: '',
       focus_time: 25,
       rest_time: 5,
     });

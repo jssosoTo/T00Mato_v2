@@ -180,30 +180,25 @@ function ToDo() {
             ? {
                 ...formData,
                 repeat_date:
-                  repeat_date &&
-                  repeat_date.sort((a: number, b: number) => a - b).join(''),
+                  (repeat_date &&
+                    repeat_date
+                      .sort((a: number, b: number) => a - b)
+                      .join('')) ||
+                  '',
                 todo_group_id: Number(todo_group_id),
                 todo_group: undefined,
               }
             : formData
         )
-      : request.post(
-          `/api/todo/${id}`,
-          repeat_type
-            ? {
-                ...formData,
-                todo_group_id: Number(todo_group_id),
-                todo_group: undefined,
-                repeat_date:
-                  repeat_date &&
-                  repeat_date.sort((a: number, b: number) => a - b).join(''),
-              }
-            : {
-                ...formData,
-                todo_group_id: Number(todo_group_id),
-                todo_group: undefined,
-              }
-        );
+      : request.post(`/api/todo/${id}`, {
+          ...formData,
+          todo_group_id: Number(todo_group_id),
+          todo_group: undefined,
+          repeat_date:
+            (repeat_date &&
+              repeat_date.sort((a: number, b: number) => a - b).join('')) ||
+            '',
+        });
   });
 
   const { loading: deleteLoading, run: deleteRun } = useLoading(async () => {
