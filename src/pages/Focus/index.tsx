@@ -10,7 +10,7 @@ import {
   RightOutlined,
   TagOutlined,
 } from '@ant-design/icons';
-import { Form, Input, Modal, Popconfirm, Select } from 'antd';
+import { Form, Input, Modal, Popconfirm, Select, message } from 'antd';
 import { useContext, useEffect, useState } from 'react';
 import Son1 from '../../public/audio/song1.mp3';
 import Son2 from '../../public/audio/song2.mp3';
@@ -71,7 +71,7 @@ function Focus() {
   }>({
     minutes: 25,
     seconds: 0,
-    restMins: 1,
+    restMins: 5,
   });
   const [musicToolShow, setMusicToolShow] = useState<boolean>(false);
   const [isRested, setIsRested] = useState<boolean>(false);
@@ -89,9 +89,11 @@ function Focus() {
       author: '',
     },
   });
-  const [modal, setModal] = useState<{ show: boolean; title: string }>(
-    initialState
-  );
+  const [modal, setModal] = useState<{
+    show: boolean;
+    title: string;
+    isClick?: boolean;
+  }>(initialState);
   const { isFullScreen, handleScreenSwitch, handleScreenClose } =
     useContext(AppContext);
 
@@ -111,29 +113,64 @@ function Focus() {
     !id
   );
 
-  const { run } = useLoading(async () =>
-    request.post(`api/todo/repeat/${id}`, {})
+  const { run } = useLoading(
+    async ({
+      type,
+      time,
+      pId,
+    }: {
+      type: 'success' | 'fail';
+      time: number;
+      pId?: number;
+    }) =>
+      request.post(`api/todo/repeat/${pId || id}`, {
+        type,
+        time,
+      })
   );
 
-  const switchStatus = () => {
+  const { loading: addLoading, run: addRun } = useLoading(async () => {
+    const formData = form.getFieldsValue();
+    const { title, todo_group: todo_group_id } = formData;
+
+    if (!title) {
+      throw new Error('请输入标题');
+    }
+
+    return request.post(`/api/todo/`, {
+      ...formData,
+      todo_group_id: Number(todo_group_id),
+      repeat: 1,
+      todo_group: undefined,
+      repeat_type: 'once',
+      repeat_date: undefined,
+      focus_time: 25,
+      rest_time: 5,
+    });
+  });
+
+  const lastRepeatHandler = (type: 'fail' | 'success') => {
+    run({
+      type,
+      time: data.focus_time - time.minutes - (time.seconds && 1),
+    });
+    handleScreenClose!();
+    navigate('/todo', { replace: true });
+  };
+
+  const switchStatus = (isClick?: boolean) => {
     const isLastRepeat = !isRested && repeatTimes === 1;
     if (isLastRepeat && id) {
       // 调用次数加一接口
-      // run();
-      console.log(initialTimes.minutes - time.minutes);
-      handleScreenClose!();
-      navigate('/todo', { replace: true });
+      lastRepeatHandler(isClick ? 'fail' : 'success');
     } else if (isLastRepeat) {
       // 主页直接进入没有指定id的情况
       setIsPaused(true);
-      setModal({ ...initialState, show: true });
-
-      console.log(initialTimes.minutes - time.minutes);
+      setModal({ ...initialState, show: true, isClick: isClick || false });
     } else if (!isRested) {
       // 不是循环最后一次
       // 调用次数加一接口
-      // run();
-      console.log(initialTimes.minutes - time.minutes);
+      lastRepeatHandler(isClick ? 'fail' : 'success');
 
       // 设置休息时间
       setTime({ ...initialTimes, minutes: initialTimes.restMins });
@@ -182,11 +219,6 @@ function Focus() {
   }, [time]);
 
   useEffect(() => {
-    console.log({
-      minutes: data.focus_time || initialTimes.minutes,
-      seconds: 0,
-      restMins: data.rest_time || initialTimes.restMins,
-    });
     setInitialTimes({
       minutes: data.focus_time || initialTimes.minutes,
       seconds: 0,
@@ -204,7 +236,16 @@ function Focus() {
   const ExtendNode = (
     <FunctionRightBar
       isExtend={modal.show}
-      handleCloseRightFuncBar={() => setModal({ ...initialState })}
+      handleCloseRightFuncBar={() => {
+        Modal.confirm({
+          type: 'warn',
+          title: '温馨提示',
+          content:
+            '点击确认代表放弃此次专注的记录，取消则进入下一个番茄钟记录但覆盖上个番茄钟的记录',
+          onOk: () => navigate('/todo', { replace: true }),
+          onCancel: () => setModal({ ...initialState }),
+        });
+      }}
       hideDelBtn={true}
       deleteFunc={() => {}}
     >
@@ -252,7 +293,15 @@ function Focus() {
           <div className={styles.ButtonContainer}>
             <button
               onClick={async () => {
+                const { id } = await addRun();
+                await run({
+                  pId: id,
+                  type: modal.isClick ? 'fail' : 'success',
+                  time:
+                    initialTimes.minutes - time.minutes - (time.seconds && 1),
+                });
                 setModal({ ...initialState });
+                navigate('/todo', { replace: true });
               }}
             >
               添加
@@ -264,7 +313,7 @@ function Focus() {
   );
 
   return (
-    <Loading loading={loading} extendNode={ExtendNode}>
+    <Loading loading={loading || addLoading} extendNode={ExtendNode}>
       <div className={`${styles.ClockPage} timeClock`}>
         {modalContent.song && (
           <div
@@ -396,7 +445,15 @@ function Focus() {
               }
               okText="确认"
               cancelText="取消"
-              onConfirm={switchStatus}
+              onConfirm={
+                initialTimes.minutes - time.minutes - (time.seconds && 1) ===
+                  0 && !isRested
+                  ? () => {
+                      message.info('专注一分钟以内，不记录时长');
+                      navigate('/todo', { replace: true });
+                    }
+                  : () => switchStatus(true)
+              }
             >
               <PoweroffOutlined />
             </Popconfirm>

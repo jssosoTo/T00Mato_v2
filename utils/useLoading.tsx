@@ -6,10 +6,10 @@ export default function useLoading(func: any) {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
 
-  const fetchData = async () => {
+  const fetchData = async (...args: any) => {
     setLoading(true);
     try {
-      const res = await func();
+      const res = await func(...(args || []));
       const data = res.data;
 
       if (data.code !== 0) {
@@ -17,6 +17,8 @@ export default function useLoading(func: any) {
       }
 
       setData(data.data);
+
+      return data.data;
     } catch (err: any) {
       message.warning(err.message);
     } finally {
@@ -24,9 +26,8 @@ export default function useLoading(func: any) {
     }
   };
 
-  const run = async () => {
-    func !== undefined ? await fetchData() : null;
-  };
+  const run = async (args?: any) =>
+    func !== undefined ? await fetchData(args) : null;
 
   return { loading, data, run };
 }

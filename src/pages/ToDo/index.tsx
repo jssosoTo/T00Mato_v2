@@ -192,11 +192,17 @@ function ToDo() {
           repeat_type
             ? {
                 ...formData,
+                todo_group_id: Number(todo_group_id),
+                todo_group: undefined,
                 repeat_date:
                   repeat_date &&
                   repeat_date.sort((a: number, b: number) => a - b).join(''),
               }
-            : formData
+            : {
+                ...formData,
+                todo_group_id: Number(todo_group_id),
+                todo_group: undefined,
+              }
         );
   });
 
