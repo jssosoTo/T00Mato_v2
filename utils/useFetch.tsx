@@ -14,7 +14,7 @@ export default function useFetch(
     setLoading(true);
     try {
       const res = await func();
-      const data = await res.json();
+      const data = res.data;
 
       if (data.code !== 0) {
         throw new Error('请求有误，请重试！');
