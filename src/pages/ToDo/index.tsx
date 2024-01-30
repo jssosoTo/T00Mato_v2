@@ -141,7 +141,7 @@ function ToDo() {
 
   const { loading, run, data } = useFetch(
     async () => {
-      return request.get('/api/todo');
+      return request.get('/api/todo?page_size=100');
     },
     [id],
     !id

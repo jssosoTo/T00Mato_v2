@@ -28,7 +28,7 @@ const DemoHeatmap = () => {
         fill: cfg.color,
         paht: [],
       };
-      const points = cfg.points;
+      const points = cfg.points!;
       const path = [
         ['M', points[0].x, points[0].y],
         ['L', points[1].x, points[1].y],
@@ -148,6 +148,8 @@ const DemoHeatmap = () => {
       },
     },
   };
+  // date:日期, month: 4 + 1, day: 日期, week: x轴第一个
+  // {date: "2017-05-01", commits: 1, month: 4, day: 1, week: "0"}
 
   return <Heatmap {...config} />;
 };
