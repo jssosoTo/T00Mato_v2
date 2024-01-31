@@ -9,6 +9,7 @@ import { Input, Popconfirm } from 'antd';
 import {
   BookOutlined,
   DeleteOutlined,
+  LoadingOutlined,
   RollbackOutlined,
   SaveOutlined,
 } from '@ant-design/icons';
@@ -16,7 +17,7 @@ import Markdown from 'markdown-to-jsx';
 import Loading from '../../../components/Loading';
 import { weekdayChinese } from '../../../globalConfig';
 import SimpleSegment from '../../../components/SimpleSegment';
-import queryAI from './../../../../utils/queryAI';
+import queryAI from '../../../../utils/queryAI';
 
 enum SelectionEnum {
   all,
@@ -35,6 +36,8 @@ function DetailDiary() {
   const [content, setContent] = useState('');
   const [title, setTitle] = useState('');
   const [previewStatus, setPreviewStatus] = useState<number>(SelectionEnum.all);
+  const [AIResult, setAIResult] = useState<string>('');
+  const [AILoading, setAILoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const isCreate = id ? false : true;
@@ -164,17 +167,37 @@ function DetailDiary() {
                 onChange={setPreviewStatus}
               />
               <div className="flex item-center gap-3">
-                <h4 style={{ fontSize: '1.2rem' }}>文言一心AI总结</h4>
+                <div className={styles.AIResultBar}>
+                  <h4 style={{ fontSize: '1.2rem' }}>
+                    {AIResult && !AILoading
+                      ? '文言一心AI总结：'
+                      : '文言一心AI总结'}
+                  </h4>
+                  <div className="flex-all-center">
+                    {AILoading ? (
+                      <LoadingOutlined style={{ marginLeft: '1rem' }} />
+                    ) : (
+                      AIResult
+                    )}
+                  </div>
+                </div>
                 <div
-                  className={styles.AIImg}
-                  onClick={() =>
+                  className={`${styles.AIImg} ${
+                    AILoading ? styles.Loading : ''
+                  }`}
+                  onClick={() => {
+                    setAIResult('');
+                    setAILoading(true);
                     queryAI([
                       {
                         role: 'user',
                         content: `总结一下的markdown格式的日记20字以内： ${content}`,
                       },
                     ])
-                  }
+                      .then((data) => data.json())
+                      .then((data) => setAIResult(data.result))
+                      .finally(() => setAILoading(false));
+                  }}
                 >
                   <div className={styles.SliceBlue}></div>
                   <div className={styles.SliceRed}></div>
