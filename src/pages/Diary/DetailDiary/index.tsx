@@ -16,6 +16,7 @@ import Markdown from 'markdown-to-jsx';
 import Loading from '../../../components/Loading';
 import { weekdayChinese } from '../../../globalConfig';
 import SimpleSegment from '../../../components/SimpleSegment';
+import queryAI from './../../../../utils/queryAI';
 
 enum SelectionEnum {
   all,
@@ -162,6 +163,23 @@ function DetailDiary() {
                 ]}
                 onChange={setPreviewStatus}
               />
+              <div className="flex item-center gap-3">
+                <h4 style={{ fontSize: '1.2rem' }}>文言一心AI总结</h4>
+                <div
+                  className={styles.AIImg}
+                  onClick={() =>
+                    queryAI([
+                      {
+                        role: 'user',
+                        content: `总结一下的markdown格式的日记20字以内： ${content}`,
+                      },
+                    ])
+                  }
+                >
+                  <div className={styles.SliceBlue}></div>
+                  <div className={styles.SliceRed}></div>
+                </div>
+              </div>
             </div>
 
             <div
