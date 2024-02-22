@@ -13,7 +13,7 @@ html {
 *::-webkit-scrollbar {
   width: 8px;
   height: 20px;
-  background-color: var(--bg-color);
+  background-color: transparent;
 }
 
 *::-webkit-scrollbar-thumb {

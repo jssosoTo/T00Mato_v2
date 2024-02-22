@@ -35,5 +35,8 @@ export default function (
     return { ...state, todoClassId: action.payload };
   }
 
+  if (action.type === 'MAIN_COLOR_CHANGE') {
+    return { ...state, mainColor: action.payload };
+  }
   return state;
 }

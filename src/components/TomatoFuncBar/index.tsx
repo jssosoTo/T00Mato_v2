@@ -5,6 +5,7 @@ import {
   AppstoreAddOutlined,
   BarsOutlined,
   BookOutlined,
+  ChromeOutlined,
   DownOutlined,
   HeatMapOutlined,
   HourglassOutlined,
@@ -130,6 +131,19 @@ function TomatoFuncBar({ isShow }: { isShow: boolean }) {
               <span>日记</span>
               <span>
                 <BookOutlined />
+              </span>
+            </Link>
+          </li>
+          <li>
+            <Link
+              className={`${
+                pathname === '/baiduAI' ? styles.Active : ''
+              } flex justify-between`}
+              to="/baiduAI"
+            >
+              <span>文心一言AI助手</span>{' '}
+              <span>
+                <ChromeOutlined />
               </span>
             </Link>
           </li>

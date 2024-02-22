@@ -15,6 +15,8 @@ import CountdownTime from './pages/CountdownTime';
 import MyInfo from './pages/MyInfo';
 import Login from './pages/Login';
 import Error from './pages/Error';
+import AIPage from './pages/AIPage';
+import { ConfigProvider } from 'antd';
 
 type RoutesProp = {
   path: string;
@@ -68,6 +70,10 @@ const routes: RoutesProp[] = [
     ],
   },
   {
+    path: '/baiduAI',
+    element: <AIPage />,
+  },
+  {
     path: '/myInfo',
     element: <MyInfo />,
   },
@@ -78,25 +84,28 @@ const routes: RoutesProp[] = [
 ];
 
 function App() {
-  const { isExtendFuncLeftBar: isExtendSideBar } = useContext(AppContext);
+  const { isExtendFuncLeftBar: isExtendSideBar, mainColor } =
+    useContext(AppContext);
 
   return (
-    <Routes>
-      <Route path="/login" element={<Login />}></Route>
-      <Route
-        path="*"
-        element={
-          <>
-            {/* <TomatoNav isExtendSideBar={isExtendSideBar} /> */}
-            {/* <DemoHeatmap /> */}
-            <main className="main flex" style={{ position: 'relative' }}>
-              <TomatoFuncBar isShow={isExtendSideBar} />
-              <Routes>{formatRoutes(routes)}</Routes>
-            </main>
-          </>
-        }
-      ></Route>
-    </Routes>
+    <ConfigProvider theme={{ token: { colorPrimary: mainColor } }}>
+      <Routes>
+        <Route path="/login" element={<Login />}></Route>
+        <Route
+          path="*"
+          element={
+            <>
+              {/* <TomatoNav isExtendSideBar={isExtendSideBar} /> */}
+              {/* <DemoHeatmap /> */}
+              <main className="main flex" style={{ position: 'relative' }}>
+                <TomatoFuncBar isShow={isExtendSideBar} />
+                <Routes>{formatRoutes(routes)}</Routes>
+              </main>
+            </>
+          }
+        ></Route>
+      </Routes>
+    </ConfigProvider>
   );
 }
 

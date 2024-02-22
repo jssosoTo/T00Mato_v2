@@ -170,8 +170,8 @@ function DetailDiary() {
                 <div className={styles.AIResultBar}>
                   <h4 style={{ fontSize: '1.2rem' }}>
                     {AIResult && !AILoading
-                      ? '文言一心AI总结：'
-                      : '文言一心AI总结'}
+                      ? '文心一言AI总结：'
+                      : '文心一言AI总结'}
                   </h4>
                   <div className="flex-all-center">
                     {AILoading ? (
