@@ -182,6 +182,7 @@ function ToDo() {
                 repeat_date:
                   (repeat_date &&
                     repeat_date
+                      .split('')
                       .sort((a: number, b: number) => a - b)
                       .join('')) ||
                   '',
@@ -196,7 +197,10 @@ function ToDo() {
           todo_group: undefined,
           repeat_date:
             (repeat_date &&
-              repeat_date.sort((a: number, b: number) => a - b).join('')) ||
+              repeat_date
+                .split('')
+                .sort((a: number, b: number) => a - b)
+                .join('')) ||
             '',
         });
   });
