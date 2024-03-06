@@ -99,6 +99,10 @@ function ToDo() {
     sortWay: 0,
     title: '排序依据',
   });
+  const [hideList, setHideList] = useState<{ today: boolean; other: boolean }>({
+    today: false,
+    other: false,
+  });
   const sortArr = [
     {
       name: '创建时间（最新最前）',
@@ -451,18 +455,92 @@ function ToDo() {
         ]}
         sortArr={sortArr}
       >
-        <main className={`auto-scroll ${styles.Main}`}>
-          {((id ? classData.todos : data.list) || [])
-            .slice()
-            .sort(sortArr[sortModalShow.sortWay].sort)
-            .map((item: ModalProps) => (
-              <ToDoItem
-                key={item.id}
-                {...item}
-                onClick={setModal}
-                src={`/focus?id=${item.id}`}
-              />
-            ))}
+        <main className={`auto-scroll  ${styles.Main}`}>
+          <div className={`auto-scroll`}>
+            <h2
+              style={{
+                cursor: 'pointer',
+                marginBottom: '1.2rem',
+                fontSize: '2rem',
+                fontWeight: 400,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+              onClick={() =>
+                setHideList({ ...hideList, today: !hideList.today })
+              }
+            >
+              <span>今日待办</span>
+              <span style={{ marginRight: '1rem' }}>
+                <DownOutlined
+                  className="transition_3s"
+                  style={{ rotate: `${hideList.today ? 180 : 0}deg` }}
+                />
+              </span>
+            </h2>
+            <div
+              className={styles.List}
+              style={{ display: hideList.today ? 'none' : 'flex' }}
+            >
+              {((id ? classData.todos : data.list) || [])
+                .slice()
+                .sort(sortArr[sortModalShow.sortWay].sort)
+                .filter((item: ModalProps) =>
+                  item.repeat_date.includes(moment().day().toString())
+                )
+                .map((item: ModalProps) => (
+                  <ToDoItem
+                    key={item.id}
+                    {...item}
+                    onClick={setModal}
+                    src={`/focus?id=${item.id}`}
+                  />
+                ))}
+            </div>
+            <h2
+              style={{
+                cursor: 'pointer',
+                margin: '1.2rem 0',
+                fontSize: '2rem',
+                fontWeight: 400,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+              onClick={() =>
+                setHideList({ ...hideList, other: !hideList.other })
+              }
+            >
+              <span>其它日期待办</span>
+              <span style={{ marginRight: '1rem' }}>
+                <DownOutlined
+                  className="transition_3s"
+                  style={{ rotate: `${hideList.other ? 180 : 0}deg` }}
+                />
+              </span>
+            </h2>
+            <div
+              className={styles.List}
+              style={{ display: hideList.other ? 'none' : 'flex' }}
+            >
+              {((id ? classData.todos : data.list) || [])
+                .slice()
+                .sort(sortArr[sortModalShow.sortWay].sort)
+                .filter(
+                  (item: ModalProps) =>
+                    !item.repeat_date.includes(moment().day().toString())
+                )
+                .map((item: ModalProps) => (
+                  <ToDoItem
+                    key={item.id}
+                    {...item}
+                    onClick={setModal}
+                    src={`/focus?id=${item.id}`}
+                  />
+                ))}
+            </div>
+          </div>
           {!((id ? classData.todos : data.list) || []).length && (
             <Empty
               className="m-auto"
