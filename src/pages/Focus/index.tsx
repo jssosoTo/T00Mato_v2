@@ -11,12 +11,13 @@ import {
   TagOutlined,
 } from '@ant-design/icons';
 import { Form, Input, Modal, Popconfirm, Select, message } from 'antd';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import Son1 from '../../public/audio/song1.mp3';
 import Son2 from '../../public/audio/song2.mp3';
 import Son3 from '../../public/audio/song3.mp3';
 import Son4 from '../../public/audio/song4.mp3';
 import Son5 from '../../public/audio/song5.mp3';
+import TimeEndSong from '../../public/audio/timeEnd.mp3';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AppContext } from '../../components/Context/AppAPI/AppAPI';
 import useFetch from '../../../utils/useFetch';
@@ -81,6 +82,7 @@ function Focus() {
     initialTimes
   );
   const [singleRepeatTime, setSingleRepeatTime] = useState<number>(0);
+  const tickSong = useRef(null);
   const [modalContent, setModalContent] = useState({
     open: false,
     song: {
@@ -192,6 +194,29 @@ function Focus() {
         minutes: number;
         seconds: number;
       }) => {
+        if (preMinutes === 0 && preSeconds === 6) {
+          tickSong.current.play();
+        }
+
+        if (
+          preMinutes === 0 &&
+          preSeconds === 11 &&
+          Notification.permission === 'granted'
+        ) {
+          const n = new Notification('T00Mato', {
+            body: '您的待办时间还有10秒钟结束，将在5秒后响起音乐提示铃声',
+            icon: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1549464117983&di=286ad42d05b9ea9720daa1d62cd18ee5&imgtype=0&src=http%3A%2F%2Fimgsrc.baidu.com%2Fimgad%2Fpic%2Fitem%2F8326cffc1e178a8208b90d86fc03738da977e80b.jpg',
+          });
+
+          setTimeout(() => {
+            n.close();
+          }, 5000);
+
+          n.onerror = function (e) {
+            console.log('error', e);
+          };
+        }
+
         if (preSeconds !== 0) {
           return { minutes: preMinutes, seconds: preSeconds - 1 };
         } else if (preMinutes !== 0) {
@@ -232,6 +257,18 @@ function Focus() {
     setRepeatTimes(data.repeat || 1);
     setIsRested(false);
   }, [data]);
+
+  useEffect(() => {
+    if (undefined !== window.Notification) {
+      if (Notification.permission === 'default') {
+        Notification.requestPermission(function () {
+          if (Notification.permission === 'denied') {
+            message.warning('请允许通知，以便我们在时间将要结束时提醒您');
+          }
+        });
+      }
+    }
+  }, []);
 
   const ExtendNode = (
     <FunctionRightBar
@@ -379,6 +416,7 @@ function Focus() {
           </div>
         )}
         <main className={styles.Main}>
+          <audio src={TimeEndSong} ref={tickSong}></audio>
           <div className={styles.MottoContainer}>
             <div>
               <span>“</span>
