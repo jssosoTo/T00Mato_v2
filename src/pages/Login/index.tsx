@@ -3,15 +3,33 @@ import GoogleInput from '../../components/GoogleInput';
 import { Button } from 'antd';
 import { ChangeEvent, useState } from 'react';
 import { EllipsisOutlined } from '@ant-design/icons';
+import useLoading from '../../../utils/useLoading';
+import request from '../../../utils/request';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
   const [isRegister, setIsRegister] = useState<boolean>(false);
+  const navigate = useNavigate();
   const [step, setStep] = useState<number>(1);
-  const [email, setEmail] = useState<string>('');
+  const [info, setInfo] = useState<{ email: string; password: string }>({
+    email: '',
+    password: '',
+  });
+
+  const { loading, run } = useLoading(async () => {
+    await request.post(isRegister ? '/api/users' : '/api/auth/login', info);
+  });
+
+  const login = async () => {
+    await run();
+    document.cookie =
+      'Authentication=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDA4NkBxcS5jb20iLCJ1c2VybmFtZSI6IjEwMDg2IiwiaWF0IjoxNzEwNzQ3MTkyLCJleHAiOjE3MTA4MzM1OTJ9.8jeMZPClHE5OntaA0yi70ZMIO45OgUF_Tyr2L1Nzw1c; Max-Age=2592000; Path=/; Expires=Wed, 17 Apr 2024 07:33:12 GMT; HttpOnly';
+    navigate('/todo', { replace: true });
+  };
 
   return (
     <div className={styles.LoginPage}>
-      <div className={`${false && styles.Loading} ${styles.LoginContainer}`}>
+      <div className={`${loading && styles.Loading} ${styles.LoginContainer}`}>
         <div className={styles.LogoContainer}>
           <h2>
             <span style={{ color: 'rgb(0, 148, 253)' }}>T</span>
@@ -27,7 +45,7 @@ function Login() {
           <div className="flex-all-center">
             <div className={styles.BackContainer} onClick={() => setStep(1)}>
               <div className={styles.ColorImg}></div>
-              <h4 style={{ fontWeight: 500 }}>{email}</h4>
+              <h4 style={{ fontWeight: 500 }}>{info.email}</h4>
               <div className={'flex-all-center'}>
                 <EllipsisOutlined />
               </div>
@@ -40,13 +58,31 @@ function Login() {
         <div className="flex-all-center mt-3">
           {step === 1 ? (
             <GoogleInput
-              value={email}
-              onChange={(e: ChangeEvent) => setEmail(e.target.value)}
+              value={info.email}
+              onChange={(e: ChangeEvent) =>
+                setInfo({ ...info, email: e.target.value })
+              }
               label="电子邮箱地址"
               style={{ width: '100%' }}
             />
+          ) : isRegister ? (
+            <GoogleInput
+              label="密码"
+              style={{ width: '100%' }}
+              value={info.password}
+              onChange={(e: ChangeEvent) =>
+                setInfo({ ...info, password: e.target.value })
+              }
+            />
           ) : (
-            <GoogleInput label="邮箱验证码" style={{ width: '100%' }} />
+            <GoogleInput
+              label="密码"
+              style={{ width: '100%' }}
+              value={info.password}
+              onChange={(e: ChangeEvent) =>
+                setInfo({ ...info, password: e.target.value })
+              }
+            />
           )}
         </div>
         <div>
@@ -63,18 +99,19 @@ function Login() {
             onClick={() => {
               setStep(1);
               setIsRegister(!isRegister);
+              setInfo({ email: '', password: '' });
             }}
           >
             {isRegister ? '已有账号？登录' : '创建账号'}
           </Button>
-          {step !== 3 && (
-            <button
-              className="main-btn"
-              onClick={() => setStep((step: number) => step + 1)}
-            >
-              下一步
-            </button>
-          )}
+          <button
+            className="main-btn"
+            onClick={() =>
+              step < 2 ? setStep((step: number) => step + 1) : login()
+            }
+          >
+            {step < 2 ? '下一步' : isRegister ? '注册' : '登录'}
+          </button>
         </div>
       </div>
     </div>

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { message } from 'antd';
+import { Modal, message } from 'antd';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function useFetch(
   func: any,
@@ -9,11 +10,13 @@ export default function useFetch(
 ) {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
+  const navigate = useNavigate();
 
   const fetchData = async () => {
     setLoading(true);
     try {
       const res = await func();
+      console.log(res);
       const data = res.data;
 
       if (data.code !== 0) {
@@ -22,6 +25,13 @@ export default function useFetch(
 
       setData(data.data);
     } catch (err: any) {
+      if (err.response?.status === 401) {
+        Modal.confirm({
+          title: '暂未登录，是否跳转进行登录？',
+          onOk: () => navigate('/login', { replace: true }),
+        });
+      }
+
       message.warning(err.message);
     } finally {
       setLoading(false);

@@ -5,14 +5,58 @@ import styles from './index.module.css';
 import Img from '../../assets/Home.jpg';
 import ThemeCard from './ThemeCard';
 import Motto from './Motto';
-import { useState } from 'react';
+import { ChangeEventHandler, useEffect, useState } from 'react';
 import { Watermark } from 'antd';
+import useFetch from '../../../utils/useFetch';
+import request from '../../../utils/request';
+import useLoading from '../../../utils/useLoading';
+
+const initialState = {
+  email: '',
+  username: '',
+  sex: '',
+  bio: '',
+};
 
 function MyInfo() {
   const [isInfoSet, setIsInfoSet] = useState<boolean>(false);
+  const [info, setInfo] = useState<{
+    id?: string;
+    email: string;
+    username: string;
+    sex: string;
+    bio: string;
+  }>(initialState);
+
+  function changeInfo(e: ChangeEventHandler) {
+    const { name, value } = e.target;
+    setInfo((prev) => ({ ...prev, [name]: value }));
+  }
+
+  const {
+    data = {},
+    loading,
+    run,
+  } = useFetch(async () => {
+    return await request.get('/api/users/profile');
+  }, []);
+
+  const { loading: editLoading, run: editRun } = useLoading(async () => {
+    const res = await request.put(`api/users/${data.id}`, {
+      ...info,
+    });
+
+    run();
+    return res;
+  });
+
+  useEffect(() => {
+    const { id, ...formatData } = data || {};
+    setInfo({ ...initialState, ...formatData });
+  }, [data]);
 
   return (
-    <Loading loading={false}>
+    <Loading loading={loading || editLoading}>
       <PageHeader title="我的" icon={<UserOutlined />}>
         <main>
           <Watermark content={[' P0PC0RN', 'T00Mato']}>
@@ -46,7 +90,10 @@ function MyInfo() {
                     {isInfoSet ? (
                       <button
                         className="main-btn ml-1"
-                        onClick={() => setIsInfoSet(false)}
+                        onClick={async () => {
+                          await editRun();
+                          setIsInfoSet(false);
+                        }}
                       >
                         修改
                       </button>
@@ -63,26 +110,60 @@ function MyInfo() {
                 <div className={styles.InfoInputContainer}>
                   <div className={styles.InfoListItem}>
                     <label>邮箱：</label>
-                    {isInfoSet ? <input /> : <h4>p0pc0rnsuzz@gmail.com</h4>}
+                    {isInfoSet ? (
+                      <input
+                        id="email"
+                        name="email"
+                        value={info.email}
+                        onChange={changeInfo}
+                      />
+                    ) : (
+                      <h4>{data?.email || '-'}</h4>
+                    )}
                   </div>
                   <div className={styles.InfoListItem}>
-                    <label>姓氏：</label>
-                    {isInfoSet ? <input /> : <h4>Su</h4>}
-                  </div>
-                  <div className={styles.InfoListItem}>
-                    <label>名字：</label>
-                    {isInfoSet ? <input /> : <h4>P0PC0RN</h4>}
+                    <label>姓名：</label>
+                    {isInfoSet ? (
+                      <input
+                        id="username"
+                        name="username"
+                        value={info.username}
+                        onChange={changeInfo}
+                      />
+                    ) : (
+                      <h4>{data?.username || '暂未填写'}</h4>
+                    )}
                   </div>
                   <div className={styles.InfoListItem}>
                     <label>性别：</label>
-                    {isInfoSet ? <input /> : <h4>男</h4>}
+                    {isInfoSet ? (
+                      <input
+                        id="sex"
+                        name="sex"
+                        value={info.sex}
+                        onChange={changeInfo}
+                      />
+                    ) : (
+                      <h4>
+                        {data?.sex === 0
+                          ? '男'
+                          : data?.sex === 1
+                          ? '女'
+                          : '未知'}
+                      </h4>
+                    )}
                   </div>
                   <div className={styles.InfoListItem}>
                     <label>介绍：</label>
                     {isInfoSet ? (
-                      <input />
+                      <input
+                        id="bio"
+                        name="bio"
+                        value={info.bio}
+                        onChange={changeInfo}
+                      />
                     ) : (
-                      <h4>木叶飞舞之处，火亦生生不息</h4>
+                      <h4>{data?.bio || '这家伙很懒，什么都没有留下...'}</h4>
                     )}
                   </div>
                 </div>
