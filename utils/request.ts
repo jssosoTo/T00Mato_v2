@@ -1,17 +1,28 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import axios from 'axios';
+import axios from "axios";
 
 const RemoteAPI = axios.create({
-  baseURL: 'https://bored-woolens-fly.cyclic.app',
+  baseURL: "http://localhost:3000",
   headers: {
-    'Access-Control-Allow-Credentials': true,
-    'Access-Control-Allow-Origin': 'no-cors',
-    Authorization:
-      'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDA4NkBxcS5jb20iLCJ1c2VybmFtZSI6IjEwMDg2IiwiaWF0IjoxNzEwNzQ5Njg5LCJleHAiOjE3MTA4MzYwODl9.4g-a6ZNkvm5CUlUtOheUm9Ac_tIrUkTUST7gGGx4Qfg',
+    "Access-Control-Allow-Credentials": true,
+    "Access-Control-Allow-Origin": "no-cors",
     // 'Access-Control-Allow-Origin': 'no-cors',
-    'Content-Type': 'application/json;charset=utf-8',
+    "Content-Type": "application/json;charset=utf-8",
   },
 });
+
+RemoteAPI.interceptors.request.use(
+  (config) => {
+    config.headers["Authorization"] = `Bearer ${localStorage.getItem(
+      "access_token"
+    )}`;
+    console.log("access_token = ", localStorage.getItem("access_token"));
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 export default {
   post: (url: string, data?: any) => RemoteAPI.post(url, data || null),
